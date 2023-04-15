@@ -74,9 +74,12 @@ export const createServiceTokenData = async (req: Request, res: Response) => {
 
     const secret = crypto.randomBytes(16).toString('hex');
     const secretHash = await bcrypt.hash(secret, getSaltRounds());
-
-    const expiresAt = new Date();
-    expiresAt.setSeconds(expiresAt.getSeconds() + expiresIn);
+    
+    let expiresAt; 
+    if (!!expiresIn) {
+        expiresAt = new Date()
+        expiresAt.setSeconds(expiresAt.getSeconds() + expiresIn);
+    }
 
     let user, serviceAccount;
     
@@ -87,7 +90,7 @@ export const createServiceTokenData = async (req: Request, res: Response) => {
     if (req.authData.authMode === AUTH_MODE_SERVICE_ACCOUNT && req.authData.authPayload instanceof ServiceAccount) {
         serviceAccount = req.authData.authPayload._id;
     }
-        
+    
     serviceTokenData = await new ServiceTokenData({
         name,
         workspace: workspaceId,
