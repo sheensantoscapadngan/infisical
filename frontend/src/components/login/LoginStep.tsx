@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
+import { signIn } from 'next-auth/react';
 import { useTranslation } from 'next-i18next';
 import { faWarning } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -128,6 +129,10 @@ export default function LoginStep ({
             </div>
             )}
             <div className="flex flex-row items-center justify-center md:pb-4 mt-4">
+            <button className='flex' type='button' onClick={(e) => {
+                e.preventDefault();
+                signIn('google');
+            }} >{t('signin-with-google')}</button>
             <p className="text-sm flex justify-center text-gray-400 w-max">
                 {t('login:need-account')}
             </p>

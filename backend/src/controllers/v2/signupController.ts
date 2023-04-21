@@ -5,10 +5,10 @@ import { completeAccount } from '../../helpers/user';
 import {
 	initializeDefaultOrg
 } from '../../helpers/signup';
-import { issueAuthTokens } from '../../helpers/auth';
+import { createToken, issueAuthTokens } from '../../helpers/auth';
 import { INVITED, ACCEPTED } from '../../variables';
 import request from '../../config/request';
-import { getLoopsApiKey, getHttpsEnabled } from '../../config';
+import { getLoopsApiKey, getHttpsEnabled, getJwtSignupLifetime, getJwtSignupSecret } from '../../config';
 
 /**
  * Complete setting up user by adding their personal and auth information as part of the
@@ -239,6 +239,56 @@ export const completeAccountInvite = async (req: Request, res: Response) => {
 		Sentry.captureException(err);
 		return res.status(400).send({
 			message: 'Failed to complete account setup'
+		});
+	}
+
+	return res.status(200).send({
+		message: 'Successfully set up account',
+		user,
+		token
+	});
+};
+
+/**
+ * TEMP
+ * signup flow
+ * @param req
+ * @param res
+ * @returns
+ */
+ export const createEmailSignup = async (req: Request, res: Response) => {
+	let user, token;
+	try {
+		const { email } = req.body;
+
+		// initialize user account
+		user = await User.findOne({ email }).select('+publicKey');
+		if (user && user?.publicKey) {
+			// case: user has already completed account
+			return res.status(403).send({
+				error: 'Failed email verification for complete user'
+			});
+		}
+
+		if (!user) {
+			user = await new User({
+				email
+			}).save();
+		}
+
+		// generate temporary signup token
+		token = createToken({
+			payload: {
+				userId: user._id.toString()
+			},
+			expiresIn: getJwtSignupLifetime(),
+			secret: getJwtSignupSecret()
+		});
+	} catch(err) {
+		Sentry.setUser(null);
+		Sentry.captureException(err);
+		return res.status(400).send({
+			error: 'Failed email verification'
 		});
 	}
 

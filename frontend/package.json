@@ -60,6 +60,7 @@
     "jsrp": "^0.2.4",
     "markdown-it": "^13.0.1",
     "next": "^12.3.4",
+    "next-auth": "^4.15.1",
     "next-i18next": "^13.0.2",
     "posthog-js": "^1.39.4",
     "query-string": "^7.1.3",

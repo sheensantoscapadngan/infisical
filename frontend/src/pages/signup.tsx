@@ -15,6 +15,7 @@ import SecurityClient from '@app/components/utilities/SecurityClient';
 import { getTranslatedStaticProps } from '@app/components/utilities/withTranslateProps';
 import { useFetchServerStatus } from '@app/hooks/api/serverDetails';
 
+import { useSession } from 'next-auth/react';
 import checkEmailVerificationCode from './api/auth/CheckEmailVerificationCode';
 import getWorkspaces from './api/workspace/getWorkspaces';
 
@@ -30,8 +31,8 @@ export default function SignUp() {
   const [codeError, setCodeError] = useState(false);
   const [step, setStep] = useState(1);
   const router = useRouter();
-  const {data: serverDetails } = useFetchServerStatus()
-
+  const { data: serverDetails } = useFetchServerStatus();
+  const authSession = useSession();
 
   const { t } = useTranslation();
 
@@ -46,6 +47,12 @@ export default function SignUp() {
     };
     tryAuth();
   }, []);
+
+  useEffect(() => {
+    if (step === 1 && authSession.status === 'authenticated') {
+      
+    }
+  }, [authSession, step]);
 
   /**
    * Goes to the following step (out of 5) of the signup process.
@@ -62,7 +69,7 @@ export default function SignUp() {
       // Checking if the code matches the email.
       const response = await checkEmailVerificationCode({ email, code });
       if (response.status === 200) {
-        const {token} = await response.json();
+        const { token } = await response.json();
         SecurityClient.setSignupToken(token);
         setStep(3);
       } else {
@@ -73,19 +80,19 @@ export default function SignUp() {
 
   // when email service is not configured, skip step 2 and 5
   useEffect(() => {
-    if (!serverDetails?.emailConfigured && step === 2){
-      incrementStep()
+    if (!serverDetails?.emailConfigured && step === 2) {
+      incrementStep();
     }
 
-    if (!serverDetails?.emailConfigured && step === 5){
-      getWorkspaces().then((userWorkspaces)=>{
+    if (!serverDetails?.emailConfigured && step === 5) {
+      getWorkspaces().then((userWorkspaces) => {
         router.push(`/dashboard/${userWorkspaces[0]._id}`);
       });
     }
   }, [step]);
 
   return (
-    <div className="bg-bunker-800 h-screen flex flex-col items-center justify-center">
+    <div className="flex h-screen flex-col items-center justify-center bg-bunker-800">
       <Head>
         <title>{t('common:head-title', { title: t('signup:title') })}</title>
         <link rel="icon" href="/infisical.ico" />
@@ -93,9 +100,9 @@ export default function SignUp() {
         <meta property="og:title" content={t('signup:og-title') as string} />
         <meta name="og:description" content={t('signup:og-description') as string} />
       </Head>
-      <div className="flex flex-col justify-center items-center">
+      <div className="flex flex-col items-center justify-center">
         <Link href="/">
-          <div className="flex justify-center mb-2 md:mb-8 cursor-pointer">
+          <div className="mb-2 flex cursor-pointer justify-center md:mb-8">
             <Image src="/images/biglogo.png" height={90} width={120} alt="Infisical Wide Logo" />
           </div>
         </Link>
@@ -127,7 +134,11 @@ export default function SignUp() {
               password={password}
               name={`${firstName} ${lastName}`}
             />
-          ) : (serverDetails?.emailConfigured ? <TeamInviteStep /> : "")}
+          ) : serverDetails?.emailConfigured ? (
+            <TeamInviteStep />
+          ) : (
+            ''
+          )}
         </form>
       </div>
     </div>

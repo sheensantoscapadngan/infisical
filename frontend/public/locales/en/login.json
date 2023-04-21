@@ -6,5 +6,6 @@
   "need-account": "Need an Infisical account?",
   "create-account": "Create an account",
   "forgot-password": "Forgot your password?",
+  "signin-with-google": "Sign in with Google.",
   "error-login": "Wrong credentials."
 }

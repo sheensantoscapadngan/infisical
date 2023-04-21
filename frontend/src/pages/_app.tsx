@@ -2,6 +2,8 @@
 import { useEffect } from 'react';
 import { AppProps } from 'next/app';
 import { useRouter } from 'next/router';
+import { Session } from 'next-auth';
+import { SessionProvider } from 'next-auth/react';
 import { appWithTranslation } from 'next-i18next';
 import { config } from '@fortawesome/fontawesome-svg-core';
 import { QueryClientProvider } from '@tanstack/react-query';
@@ -25,7 +27,9 @@ import '../styles/globals.css';
 
 config.autoAddCss = false;
 
-type NextAppProp = AppProps & {
+type NextAppProp = AppProps<{
+  session: Session;
+}> & {
   Component: AppProps['Component'] & { requireAuth: boolean };
 };
 
@@ -65,32 +69,36 @@ const App = ({ Component, pageProps, ...appProps }: NextAppProp): JSX.Element =>
   ) {
     return (
       <QueryClientProvider client={queryClient}>
-        <AuthProvider>
-          <Component {...pageProps} />
-        </AuthProvider>
+        <SessionProvider session={pageProps.session}>
+          <AuthProvider>
+            <Component {...pageProps} />
+          </AuthProvider>
+        </SessionProvider>
       </QueryClientProvider>
     );
   }
 
   return (
     <QueryClientProvider client={queryClient}>
-      <TooltipProvider>
-        <AuthProvider>
-          <WorkspaceProvider>
-            <OrgProvider>
-              <SubscriptionProvider>
-                <UserProvider>
-                  <NotificationProvider>
-                    <AppLayout>
-                      <Component {...pageProps} />
-                    </AppLayout>
-                  </NotificationProvider>
-                </UserProvider>
-              </SubscriptionProvider>
-            </OrgProvider>
-          </WorkspaceProvider>
-        </AuthProvider>
-      </TooltipProvider>
+      <SessionProvider session={pageProps.session}>
+        <TooltipProvider>
+          <AuthProvider>
+            <WorkspaceProvider>
+              <OrgProvider>
+                <SubscriptionProvider>
+                  <UserProvider>
+                    <NotificationProvider>
+                      <AppLayout>
+                        <Component {...pageProps} />
+                      </AppLayout>
+                    </NotificationProvider>
+                  </UserProvider>
+                </SubscriptionProvider>
+              </OrgProvider>
+            </WorkspaceProvider>
+          </AuthProvider>
+        </TooltipProvider>
+      </SessionProvider>
     </QueryClientProvider>
   );
 };
