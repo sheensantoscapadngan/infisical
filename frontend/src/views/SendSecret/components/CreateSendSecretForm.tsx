@@ -10,7 +10,13 @@ const typeSchema = z.object({
   
 type TFormSchema = z.infer<typeof typeSchema>;
 
-export const CreateSendSecretForm = () => {
+type Props = {
+  isAddModalOpen: boolean;
+  setAddModalState: (state: boolean) => void;
+};
+
+export const CreateSendSecretForm = (props: Props) => {
+    const { isAddModalOpen, setAddModalState } = props;
     const {
         register,
         handleSubmit,
@@ -29,7 +35,8 @@ export const CreateSendSecretForm = () => {
 
     return (
         <Modal
-          isOpen={true}
+          isOpen={isAddModalOpen}
+          onOpenChange={(state) => setAddModalState(state)}
         >
           <ModalContent
             title="Add secret"
@@ -71,6 +78,7 @@ export const CreateSendSecretForm = () => {
                   key="layout-cancel-create-project"
                   variant="plain"
                   colorSchema="secondary"
+                  onClick={() => setAddModalState(false)}
                 >
                   Cancel
                 </Button>

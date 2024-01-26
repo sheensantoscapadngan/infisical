@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { useTranslation } from "react-i18next";
+import { useState } from "react";
 import Head from "next/head";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMagnifyingGlass, faPlus, faArrowUp } from "@fortawesome/free-solid-svg-icons";
@@ -8,6 +9,8 @@ import { CreateSendSecretForm } from "@app/views/SendSecret/components/CreateSen
 
 export default function SendSecret() {
     const { t } = useTranslation();
+    const [isAddModalOpen, setAddModalState] = useState(false);
+
     return (
         <>
             <Head>
@@ -36,6 +39,7 @@ export default function SendSecret() {
                                 variant="outline_bg"
                                 leftIcon={<FontAwesomeIcon icon={faPlus} />}
                                 className="rounded-r-none h-10"
+                                onClick={() => setAddModalState(true)}
                             >
                                 Add Secret
                             </Button>
@@ -60,7 +64,7 @@ export default function SendSecret() {
                             </div>      
                         </div>
                     </div>
-                    <CreateSendSecretForm />
+                    <CreateSendSecretForm isAddModalOpen={isAddModalOpen} setAddModalState={setAddModalState}/>
                 </div>
             </div>
         </>
