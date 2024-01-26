@@ -1,7 +1,16 @@
 import { Controller, useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Button, FormControl, Input, Modal, ModalContent, SecretInput } from "@app/components/v2";
+import { Button, FormControl, Input, Modal, ModalContent, SecretInput, Select, SelectItem } from "@app/components/v2";
+
+const expirations = [
+  { label: "1 hour", value: "1h" },
+  { label: "1 day", value: "1d" },
+  { label: "2 days", value: "2d" },
+  { label: "3 days", value: "3d" },
+  { label: "7 days", value: "7d" },
+  { label: "30 days", value: "30d" }
+];
 
 const typeSchema = z.object({
     key: z.string(),
@@ -64,6 +73,33 @@ export const CreateSendSecretForm = (props: Props) => {
                   </FormControl>
                 )}
               />
+
+              <Controller
+                control={control}
+                name="expiresIn"
+                defaultValue="1h"
+                render={({ field: { onChange, ...field }, fieldState: { error } }) => (
+                    <FormControl
+                        label="Expiration"
+                        errorText={error?.message}
+                        isError={Boolean(error)}
+                    >
+                        <Select
+                            defaultValue={field.value}
+                            {...field}
+                            onValueChange={(e) => onChange(e)}
+                            className="w-full"
+                        >
+                            {expirations.map(({ label, value }) => (
+                                <SelectItem value={String(value || "")} key={`api-key-expiration-${label}`}>
+                                    {label}
+                                </SelectItem>
+                            ))}
+                        </Select>
+                    </FormControl>
+                )}
+              />
+
               <div className="mt-7 flex items-center">
                 <Button
                   isDisabled={isSubmitting}
