@@ -189,7 +189,8 @@ export const AppLayout = ({ children }: LayoutProps) => {
           (!orgs?.map((org) => org._id)?.includes(router.query.id) &&
             !router.asPath.includes("project") &&
             !router.asPath.includes("personal") &&
-            !router.asPath.includes("integration")))
+            !router.asPath.includes("integration") &&
+            !router.asPath.includes("send-secret")))
       ) {
         router.push(`/org/${currentOrg?._id}/overview`);
       }
@@ -414,7 +415,7 @@ export const AppLayout = ({ children }: LayoutProps) => {
                     </DropdownMenu>
                   </div>
                 )}
-                {!router.asPath.includes("org") &&
+                {!router.asPath.includes("org") && !router.asPath.includes("send-secret") &&
                   (!router.asPath.includes("personal") && currentWorkspace ? (
                     <div className="mt-5 mb-4 w-full p-3">
                       <p className="ml-1.5 mb-1 text-xs font-semibold uppercase text-gray-400">
@@ -582,6 +583,16 @@ export const AppLayout = ({ children }: LayoutProps) => {
                             icon="system-outline-165-view-carousel"
                           >
                             Overview
+                          </MenuItem>
+                        </a>
+                      </Link>
+                      <Link href={`/send-secret`} passHref>
+                        <a>
+                          <MenuItem
+                            isSelected={router.asPath === `/send-secret`}
+                            icon="system-outline-96-groups"
+                          >
+                            Send Secret
                           </MenuItem>
                         </a>
                       </Link>
