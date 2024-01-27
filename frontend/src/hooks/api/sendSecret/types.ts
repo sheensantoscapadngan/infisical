@@ -5,6 +5,7 @@ export type TCreateSendSecretV1DTO = {
   expiresIn: number;
   latestFileKey: UserWsKeyPair;
   value: string;
+  password?: string;
 };
 
 export type TDeleteSendSecretV1DTO = {

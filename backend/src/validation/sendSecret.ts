@@ -11,7 +11,8 @@ export const CreateSendSecretV1 = z.object({
     secretKeyTag: z.string().trim(),
     secretValueCiphertext: z.string().trim(),
     secretValueIV: z.string().trim(),
-    secretValueTag: z.string().trim()
+    secretValueTag: z.string().trim(),
+    password: z.string().optional()
   })
 });
 

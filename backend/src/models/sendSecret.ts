@@ -12,6 +12,7 @@ export interface ISendSecret {
   secretValueIV: string;
   secretValueTag: string;
   user: Types.ObjectId;
+  password?: string;
 }
 
 const sendSecretSchema = new Schema<ISendSecret>(
@@ -59,6 +60,9 @@ const sendSecretSchema = new Schema<ISendSecret>(
     user: {
       type: Schema.Types.ObjectId,
       ref: "User"
+    },
+    password: {
+      type: String
     }
   },
   {

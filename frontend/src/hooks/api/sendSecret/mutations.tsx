@@ -1,5 +1,6 @@
 import crypto from "crypto";
 import {
+  createHash,
   decryptAssymmetric,
   encryptSymmetric
 } from "@app/components/utilities/cryptography/crypto";
@@ -47,7 +48,7 @@ export const useCreateSendSecretV1 = ({
   const queryClient = useQueryClient();
 
   return useMutation<DecryptedSendSecret, {}, TCreateSendSecretV1DTO>({
-    mutationFn: async ({ key, value, expiresIn, latestFileKey }) => {
+    mutationFn: async ({ key, value, expiresIn, latestFileKey, password }) => {
       const PRIVATE_KEY = localStorage.getItem("PRIVATE_KEY") as string;
 
       // Get key for encrypting send secret encryption key
@@ -92,7 +93,8 @@ export const useCreateSendSecretV1 = ({
         secretKeyTag,
         secretValueCiphertext,
         secretValueIV,
-        secretValueTag
+        secretValueTag,
+        password: password ? createHash(password, sendSecretEncryptionKey) : undefined
       };
 
       const { data } = await apiRequest.post(`/api/v1/send-secrets`, reqBody);

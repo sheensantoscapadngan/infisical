@@ -1,5 +1,5 @@
 import argon2 from "argon2-browser";
-
+import crypto from "crypto";
 import aes from "./aes-256-gcm";
 
 const nacl = require("tweetnacl");
@@ -13,12 +13,12 @@ nacl.util = require("tweetnacl-util");
  */
 const generateKeyPair = () => {
   const pair = nacl.box.keyPair();
-  
-  return ({
-		publicKey: nacl.util.encodeBase64(pair.publicKey),
-		privateKey: nacl.util.encodeBase64(pair.secretKey)
-  });
-}
+
+  return {
+    publicKey: nacl.util.encodeBase64(pair.publicKey),
+    privateKey: nacl.util.encodeBase64(pair.secretKey)
+  };
+};
 
 type EncryptAsymmetricProps = {
   plaintext: string;
@@ -29,27 +29,19 @@ type EncryptAsymmetricProps = {
 /**
  * Verify that private key [privateKey] is the one that corresponds to
  * the public key [publicKey]
- * @param {Object} 
+ * @param {Object}
  * @param {String} - base64-encoded Nacl private key
  * @param {String} - base64-encoded Nacl public key
  */
-const verifyPrivateKey = ({
-  privateKey,
-  publicKey
-}: {
-  privateKey: string;
-  publicKey: string;
-}) => {
+const verifyPrivateKey = ({ privateKey, publicKey }: { privateKey: string; publicKey: string }) => {
   const derivedPublicKey = nacl.util.encodeBase64(
-    nacl.box.keyPair.fromSecretKey(
-      nacl.util.decodeBase64(privateKey)
-    ).publicKey
+    nacl.box.keyPair.fromSecretKey(nacl.util.decodeBase64(privateKey)).publicKey
   );
-  
+
   if (derivedPublicKey !== publicKey) {
     throw new Error("Failed to verify private key");
   }
-}
+};
 
 /**
  * Derive a key from password [password] and salt [salt] using Argon2id
@@ -225,11 +217,17 @@ const decryptSymmetric = ({ ciphertext, iv, tag, key }: DecryptSymmetricProps): 
   return plaintext;
 };
 
+const createHash = (payload: string, secretKey: string) => {
+  return crypto.createHmac("sha256", secretKey).update(JSON.stringify(payload)).digest("hex");
+};
+
 export {
+  createHash,
   decryptAssymmetric,
   decryptSymmetric,
   deriveArgonKey,
-  encryptAssymmetric, 
+  encryptAssymmetric,
   encryptSymmetric,
   generateKeyPair,
-  verifyPrivateKey};
+  verifyPrivateKey
+};

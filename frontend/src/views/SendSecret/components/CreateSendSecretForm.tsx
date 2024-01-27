@@ -36,7 +36,8 @@ const expirationMapping: { [key: string]: number } = {
 const typeSchema = z.object({
   key: z.string(),
   value: z.string(),
-  expiresIn: z.string()
+  expiresIn: z.string(),
+  password: z.string().optional()
 });
 
 type TFormSchema = z.infer<typeof typeSchema>;
@@ -62,14 +63,15 @@ export const CreateSendSecretForm = (props: Props) => {
   const { mutateAsync: createSendSecretV1 } = useCreateSendSecretV1();
   const { createNotification } = useNotificationContext();
 
-  const handleFormSubmit = async ({ key, value, expiresIn }: TFormSchema) => {
+  const handleFormSubmit = async ({ key, value, expiresIn, password }: TFormSchema) => {
     try {
       // create send secret in FE
       const sendSecret = await createSendSecretV1({
         key: key.trim(),
         value,
         latestFileKey: decryptFileKey!,
-        expiresIn: expirationMapping[expiresIn]
+        expiresIn: expirationMapping[expiresIn],
+        password
       });
 
       // send secret to BE for saving
@@ -125,6 +127,22 @@ export const CreateSendSecretForm = (props: Props) => {
                     </SelectItem>
                   ))}
                 </Select>
+              </FormControl>
+            )}
+          />
+          <Controller
+            control={control}
+            name="password"
+            render={({ field }) => (
+              <FormControl
+                label="Password (optional)"
+                isError={Boolean(errors?.value)}
+                errorText={errors?.value?.message}
+              >
+                <SecretInput
+                  {...field}
+                  containerClassName="text-bunker-300 hover:border-primary-400/50 border border-mineshaft-600 bg-mineshaft-900 px-2 py-1.5"
+                />
               </FormControl>
             )}
           />

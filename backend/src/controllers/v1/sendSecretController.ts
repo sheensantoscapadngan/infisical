@@ -15,7 +15,8 @@ export const createSendSecret = async (req: Request, res: Response) => {
       secretKeyTag,
       secretValueCiphertext,
       secretValueIV,
-      secretValueTag
+      secretValueTag,
+      password
     }
   } = await validateRequest(reqValidator.CreateSendSecretV1, req);
 
@@ -33,7 +34,8 @@ export const createSendSecret = async (req: Request, res: Response) => {
     secretKeyTag,
     secretValueCiphertext,
     secretValueIV,
-    secretValueTag
+    secretValueTag,
+    password
   }).save();
 
   return res.status(200).send({
