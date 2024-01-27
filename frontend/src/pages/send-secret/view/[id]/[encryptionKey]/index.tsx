@@ -42,24 +42,29 @@ export default function ViewSendSecret() {
           <Image src="/images/gradientLogo.svg" height={90} width={120} alt="Infisical logo" />
         </div>
       </Link>
-      <div className="mx-auto flex w-full flex-col items-center justify-center">
-        <h1 className="mb-8 bg-gradient-to-b from-white to-bunker-200 bg-clip-text text-center text-xl font-medium text-transparent">
-          Infisical Send
-        </h1>
-        <TextArea
-          isDisabled
-          className="max-w-lg border border-mineshaft-600 text-sm"
-          value={sendSecret?.value || ""}
-        />
-      </div>
-      <Button
-        key="layout-create-project-submit"
-        className="mr-4 mt-6 self-center pr-6 pl-6"
-        type="submit"
-        onClick={onCopyValueToClipboard}
-      >
-        Copy Value
-      </Button>
+      {!!sendSecret && (
+        <>
+          <div className="mx-auto flex w-full flex-col items-center justify-center">
+            <h1 className="mb-3 bg-gradient-to-b from-white to-bunker-200 bg-clip-text text-center text-xl font-medium text-transparent">
+              {sendSecret.key}
+            </h1>
+
+            <TextArea
+              isDisabled
+              className="max-w-lg border border-mineshaft-600 text-sm"
+              value={sendSecret?.value || ""}
+            />
+          </div>
+          <Button
+            key="layout-create-project-submit"
+            className="mr-4 mt-6 self-center pr-6 pl-6"
+            type="submit"
+            onClick={onCopyValueToClipboard}
+          >
+            Copy Value
+          </Button>
+        </>
+      )}
       <div className="pb-28" />
     </div>
   );
