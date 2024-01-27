@@ -12,9 +12,8 @@ import {
   SelectItem
 } from "@app/components/v2";
 import { useNotificationContext } from "@app/components/context/Notifications/NotificationProvider";
-import { useGetUserWsKey } from "@app/hooks/api";
-import { useWorkspace } from "@app/context";
 import { useCreateSendSecretV1 } from "@app/hooks/api/sendSecret/mutations";
+import { UserWsKeyPair } from "@app/hooks/api/types";
 
 const expirations = [
   { label: "1 hour", value: "1h" },
@@ -44,6 +43,7 @@ type TFormSchema = z.infer<typeof typeSchema>;
 type Props = {
   isAddModalOpen: boolean;
   setAddModalState: (state: boolean) => void;
+  decryptFileKey: UserWsKeyPair;
 };
 
 export const CreateSendSecretForm = (props: Props) => {
@@ -55,14 +55,9 @@ export const CreateSendSecretForm = (props: Props) => {
     reset,
     formState: { errors, isSubmitting }
   } = useForm<TFormSchema>({ resolver: zodResolver(typeSchema) });
+  const { decryptFileKey } = props;
 
   const { mutateAsync: createSendSecretV1 } = useCreateSendSecretV1();
-
-  const { currentWorkspace } = useWorkspace();
-  const workspaceId = currentWorkspace?._id || "";
-
-  const { data: decryptFileKey } = useGetUserWsKey(workspaceId);
-
   const { createNotification } = useNotificationContext();
 
   const handleFormSubmit = async ({ key, value, expiresIn }: TFormSchema) => {

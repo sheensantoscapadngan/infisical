@@ -6,10 +6,21 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMagnifyingGlass, faPlus, faArrowUp } from "@fortawesome/free-solid-svg-icons";
 import { Button, Input } from "@app/components/v2";
 import { CreateSendSecretForm } from "@app/views/SendSecret/components/CreateSendSecretForm";
+import { useGetSendSecretsV1 } from "@app/hooks/api/sendSecret";
+import { useWorkspace } from "@app/context";
+import { useGetUserWsKey } from "@app/hooks/api";
 
 export default function SendSecret() {
   const { t } = useTranslation();
   const [isAddModalOpen, setAddModalState] = useState(false);
+
+  const { currentWorkspace } = useWorkspace();
+  const workspaceId = currentWorkspace?._id || "";
+  const { data: decryptFileKey } = useGetUserWsKey(workspaceId);
+
+  const { data: sendSecrets } = useGetSendSecretsV1({
+    decryptFileKey: decryptFileKey!
+  });
 
   return (
     <>
@@ -63,6 +74,7 @@ export default function SendSecret() {
           <CreateSendSecretForm
             isAddModalOpen={isAddModalOpen}
             setAddModalState={setAddModalState}
+            decryptFileKey={decryptFileKey!}
           />
         </div>
       </div>

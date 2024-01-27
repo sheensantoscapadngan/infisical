@@ -55,19 +55,21 @@ export const decryptSendSecrets = (
       key,
       value,
       id: encryptedSecret._id,
-      url: siteURL,
+      url: `${siteURL}/send-secret/view/${encryptedSecret._id}/${sendEncryptionKey}`,
       expiresAt: new Date(encryptedSecret.expiresAt)
     };
   });
 };
 
 const fetchEncryptedSendSecrets = async () => {
-  const { data } = await apiRequest.get<{ secrets: EncryptedSendSecret[] }>("/api/v1/send-secrets");
+  const { data } = await apiRequest.get<{ sendSecrets: EncryptedSendSecret[] }>(
+    "/api/v1/send-secrets"
+  );
 
-  return data.secrets;
+  return data.sendSecrets;
 };
 
-export const useGetSendSecrets = ({
+export const useGetSendSecretsV1 = ({
   decryptFileKey,
   options
 }: { decryptFileKey: UserWsKeyPair } & {

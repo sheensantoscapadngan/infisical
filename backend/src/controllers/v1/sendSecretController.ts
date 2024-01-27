@@ -40,3 +40,13 @@ export const createSendSecret = async (req: Request, res: Response) => {
     sendSecret
   });
 };
+
+export const getSendSecrets = async (req: Request, res: Response) => {
+  const sendSecrets = await SendSecret.find({
+    user: req.user._id
+  });
+
+  return res.status(200).send({
+    sendSecrets
+  });
+};

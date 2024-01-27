@@ -1,1 +1,1 @@
-export { useGetSendSecrets } from "./queries";
+export { useGetSendSecretsV1 } from "./queries";
