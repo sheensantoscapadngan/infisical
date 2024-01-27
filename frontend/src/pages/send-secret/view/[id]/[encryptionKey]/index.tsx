@@ -45,15 +45,15 @@ export default function ViewSendSecret() {
       {!!sendSecret && (
         <>
           <div className="mx-auto flex w-full flex-col items-center justify-center">
-            <h1 className="mb-6 bg-gradient-to-b from-white to-bunker-200 bg-clip-text text-center text-xl font-medium text-transparent">
+            <h1 className="mb-5 bg-gradient-to-b from-white to-bunker-200 bg-clip-text text-center text-xl font-medium text-transparent">
               Infisical
             </h1>
-            <h1 className="mb-3 bg-gradient-to-b from-white to-bunker-200 bg-clip-text text-center text-xl font-normal text-transparent">
+            <h2 className="mb-2 bg-black bg-gradient-to-b from-white to-bunker-200 bg-clip-text text-left text-base font-normal text-transparent">
               {sendSecret.key}
-            </h1>
+            </h2>
             <TextArea
               isDisabled
-              className="max-w-lg border border-mineshaft-600 text-sm"
+              className="h-40 max-w-md border border-mineshaft-600 text-sm"
               value={sendSecret?.value || ""}
             />
           </div>
