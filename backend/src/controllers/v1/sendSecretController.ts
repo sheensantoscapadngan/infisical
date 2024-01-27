@@ -51,6 +51,24 @@ export const getSendSecrets = async (req: Request, res: Response) => {
   });
 };
 
+export const getSendSecret = async (req: Request, res: Response) => {
+  const {
+    params: { sendSecretId }
+  } = await validateRequest(reqValidator.DeleteSendSecretV1, req);
+
+  const sendSecret = await SendSecret.findOne({
+    _id: sendSecretId
+  });
+
+  if (!sendSecret) {
+    throw new Error("Failed to fetch secret");
+  }
+
+  return res.status(200).send({
+    sendSecret
+  });
+};
+
 export const deleteSendSecret = async (req: Request, res: Response) => {
   const {
     params: { sendSecretId }

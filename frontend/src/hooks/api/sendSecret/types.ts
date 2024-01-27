@@ -35,3 +35,5 @@ export type DecryptedSendSecret = {
   url: string;
   value: string;
 };
+
+export type DecryptedSendSecretForView = Pick<DecryptedSendSecret, "key" | "value">;

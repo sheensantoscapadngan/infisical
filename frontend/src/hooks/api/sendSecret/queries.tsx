@@ -5,11 +5,30 @@ import {
 import { apiRequest } from "@app/config/request";
 import { useQuery, UseQueryOptions } from "@tanstack/react-query";
 import { UserWsKeyPair } from "../types";
-import { DecryptedSendSecret, EncryptedSendSecret } from "./types";
+import { DecryptedSendSecret, DecryptedSendSecretForView, EncryptedSendSecret } from "./types";
 
 export const secretKeys = {
   // this is also used in secretSnapshot part
-  getSendSecrets: () => ["send-secrets"] as const
+  getSendSecrets: () => ["send-secrets"] as const,
+  getSendSecret: (sendSecretId: string) => [{ sendSecretId }, "send-secrets"] as const
+};
+
+export const decryptSendSecret = (encryptedSecret: EncryptedSendSecret, encryptionKey: string) => {
+  const key = decryptSymmetric({
+    ciphertext: encryptedSecret.secretKeyCiphertext,
+    tag: encryptedSecret.secretKeyTag,
+    iv: encryptedSecret.secretKeyIV,
+    key: encryptionKey
+  });
+
+  const value = decryptSymmetric({
+    ciphertext: encryptedSecret.secretValueCiphertext,
+    tag: encryptedSecret.secretValueTag,
+    iv: encryptedSecret.secretValueIV,
+    key: encryptionKey
+  });
+
+  return { key, value };
 };
 
 export const decryptSendSecrets = (
@@ -37,19 +56,7 @@ export const decryptSendSecrets = (
       key: privateEncryptionKey
     });
 
-    const key = decryptSymmetric({
-      ciphertext: encryptedSecret.secretKeyCiphertext,
-      tag: encryptedSecret.secretKeyTag,
-      iv: encryptedSecret.secretKeyIV,
-      key: sendEncryptionKey
-    });
-
-    const value = decryptSymmetric({
-      ciphertext: encryptedSecret.secretValueCiphertext,
-      tag: encryptedSecret.secretValueTag,
-      iv: encryptedSecret.secretValueIV,
-      key: sendEncryptionKey
-    });
+    const { key, value } = decryptSendSecret(encryptedSecret, sendEncryptionKey);
 
     return {
       key,
@@ -67,6 +74,14 @@ const fetchEncryptedSendSecrets = async () => {
   );
 
   return data.sendSecrets;
+};
+
+const fetchEncryptedSendSecret = async (sendSecretId: string) => {
+  const { data } = await apiRequest.get<{ sendSecret: EncryptedSendSecret }>(
+    `/api/v1/send-secrets/${sendSecretId}`
+  );
+
+  return data.sendSecret;
 };
 
 export const useGetSendSecretsV1 = ({
@@ -89,4 +104,27 @@ export const useGetSendSecretsV1 = ({
     queryKey: secretKeys.getSendSecrets(),
     queryFn: async () => fetchEncryptedSendSecrets(),
     select: (secrets: EncryptedSendSecret[]) => decryptSendSecrets(secrets, decryptFileKey)
+  });
+
+export const useGetSendSecretForViewV1 = ({
+  sendSecretId,
+  encryptionKey,
+  options
+}: { encryptionKey: string; sendSecretId: string } & {
+  options?: Omit<
+    UseQueryOptions<
+      EncryptedSendSecret,
+      unknown,
+      DecryptedSendSecretForView,
+      ReturnType<typeof secretKeys.getSendSecret>
+    >,
+    "queryKey" | "queryFn"
+  >;
+}) =>
+  useQuery({
+    ...options,
+    enabled: Boolean(encryptionKey && sendSecretId) && (options?.enabled ?? true),
+    queryKey: secretKeys.getSendSecret(sendSecretId),
+    queryFn: async () => fetchEncryptedSendSecret(sendSecretId),
+    select: (secret: EncryptedSendSecret) => decryptSendSecret(secret, encryptionKey)
   });

@@ -3,8 +3,10 @@ import express from "express";
 import {
   createSendSecret,
   deleteSendSecret,
+  getSendSecret,
   getSendSecrets
 } from "../../controllers/v1/sendSecretController";
+import { viewSendSecretLimit } from "../../helpers";
 import { requireAuth } from "../../middleware";
 import { AuthMode } from "../../variables";
 const router = express.Router();
@@ -24,6 +26,9 @@ router.get(
   }),
   getSendSecrets
 );
+
+// for public viewing of send secret
+router.get("/:sendSecretId", viewSendSecretLimit, getSendSecret);
 
 router.delete(
   "/:sendSecretId",
