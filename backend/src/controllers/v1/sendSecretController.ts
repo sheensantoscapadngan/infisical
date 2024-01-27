@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { validateRequest } from "../../helpers/validation";
-import { SendSecretService } from "../../services/SendSecret";
+import { SendSecret } from "../../models/sendSecret";
 import * as reqValidator from "../../validation/sendSecret";
 
 export const createSendSecret = async (req: Request, res: Response) => {
@@ -19,5 +19,24 @@ export const createSendSecret = async (req: Request, res: Response) => {
     }
   } = await validateRequest(reqValidator.CreateSendSecretV1, req);
 
-  return SendSecretService.createSendSecret();
+  const expiresAt = new Date();
+  expiresAt.setSeconds(expiresAt.getSeconds() + expiresIn);
+
+  const sendSecret = await new SendSecret({
+    encryptionKeyCiphertext,
+    encryptionKeyIV,
+    encryptionKeyTag,
+    expiresAt,
+    user: req.user._id,
+    secretKeyCiphertext,
+    secretKeyIV,
+    secretKeyTag,
+    secretValueCiphertext,
+    secretValueIV,
+    secretValueTag
+  }).save();
+
+  return res.status(200).send({
+    sendSecret
+  });
 };

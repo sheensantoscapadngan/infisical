@@ -12,3 +12,5 @@ router.post(
   }),
   createSendSecret
 );
+
+export default router;

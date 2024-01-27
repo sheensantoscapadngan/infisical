@@ -56,6 +56,7 @@ import {
   userAction as v1UserActionRouter,
   user as v1UserRouter,
   webhooks as v1WebhooksRouter,
+  sendSecret as v1SendSecretRouter,
   workspace as v1WorkspaceRouter
 } from "./routes/v1";
 import {
@@ -107,8 +108,8 @@ const main = async () => {
 
   const port = await getPort();
 
-  // initializing the database connection + redis 
-  await initRedis()
+  // initializing the database connection + redis
+  await initRedis();
   await DatabaseService.initDatabase(await getMongoURL());
   const serverCfg = await serverConfigInit();
   await setup();
@@ -238,6 +239,7 @@ const main = async () => {
   app.use("/api/v1/secret-approvals", v1SecretApprovalPolicyRouter);
   app.use("/api/v1/sso", v1SSORouter);
   app.use("/api/v1/secret-approval-requests", v1SecretApprovalRequestRouter);
+  app.use("/api/v1/send-secrets", v1SendSecretRouter);
 
   // v2 routes (improvements)
   app.use("/api/v2/signup", v2SignupRouter);

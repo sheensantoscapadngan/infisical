@@ -20,6 +20,7 @@ import secretsFolder from "./secretsFolder";
 import webhooks from "./webhook";
 import secretImps from "./secretImps";
 import admin from "./admin";
+import sendSecret from "./sendSecret";
 
 export {
   signup,
@@ -43,5 +44,6 @@ export {
   webhooks,
   secretImps,
   sso,
-  admin
+  admin,
+  sendSecret
 };
