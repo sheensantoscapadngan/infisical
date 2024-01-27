@@ -58,7 +58,7 @@ export default function ViewSendSecret() {
       </Link>
       {isAccessError(error) && (
         <>
-          <div className="mx-auto flex w-3/12 flex-col items-center justify-center">
+          <div className="mx-auto flex flex-col items-center justify-center sm:w-5/12 lg:w-4/12">
             <h1 className="mb-5 bg-gradient-to-b from-white to-bunker-200 bg-clip-text text-center text-xl font-medium text-transparent">
               Infisical
             </h1>
