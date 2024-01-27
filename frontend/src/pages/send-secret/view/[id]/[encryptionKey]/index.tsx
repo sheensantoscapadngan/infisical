@@ -1,16 +1,19 @@
 import { useNotificationContext } from "@app/components/context/Notifications/NotificationProvider";
-import { Button, TextArea } from "@app/components/v2";
+import { Button, Input, TextArea } from "@app/components/v2";
 import { useGetSendSecretForViewV1 } from "@app/hooks/api/sendSecret/queries";
+import { AxiosError } from "axios";
 import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 
 export default function ViewSendSecret() {
   const { t } = useTranslation();
 
   const { createNotification } = useNotificationContext();
+  const [password, setPassword] = useState("");
   const router = useRouter();
 
   const onCopyValueToClipboard = () => {
@@ -23,10 +26,21 @@ export default function ViewSendSecret() {
 
   const { id, encryptionKey } = router.query;
 
-  const { data: sendSecret } = useGetSendSecretForViewV1({
+  const {
+    data: sendSecret,
+    error,
+    refetch
+  } = useGetSendSecretForViewV1({
     encryptionKey: encryptionKey as string,
-    sendSecretId: id as string
+    sendSecretId: id as string,
+    password
   });
+
+  const isAccessError = (error: unknown) => (error as AxiosError)?.response?.status === 401;
+
+  const onUnlockSecret = () => {
+    refetch();
+  };
 
   return (
     <div className="flex max-h-screen min-h-screen flex-col justify-center overflow-y-auto bg-gradient-to-tr from-mineshaft-600 via-mineshaft-800 to-bunker-700 px-6">
@@ -42,6 +56,37 @@ export default function ViewSendSecret() {
           <Image src="/images/gradientLogo.svg" height={90} width={120} alt="Infisical logo" />
         </div>
       </Link>
+      {isAccessError(error) && (
+        <>
+          <div className="mx-auto flex w-3/12 flex-col items-center justify-center">
+            <h1 className="mb-5 bg-gradient-to-b from-white to-bunker-200 bg-clip-text text-center text-xl font-medium text-transparent">
+              Infisical
+            </h1>
+            <p className="justify mb-5 text-gray-400">
+              This is protected by a password. Please type the password below to continue. This
+              should be provided by the sender.
+            </p>
+            <Input
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              type="password"
+              placeholder="Enter your password..."
+              isRequired
+              autoComplete="current-password"
+              id="current-password"
+              className="select:-webkit-autofill:focus h-10"
+            />
+            <Button
+              key="view-secret-unlock-submit"
+              className="mr-4 mt-6 self-center pr-6 pl-6"
+              type="submit"
+              onClick={onUnlockSecret}
+            >
+              Unlock
+            </Button>
+          </div>
+        </>
+      )}
       {!!sendSecret && (
         <>
           <div className="mx-auto flex w-full flex-col items-center justify-center">
@@ -58,7 +103,7 @@ export default function ViewSendSecret() {
             />
           </div>
           <Button
-            key="layout-create-project-submit"
+            key="view-secret-copy-clipboard"
             className="mr-4 mt-6 self-center pr-6 pl-6"
             type="submit"
             onClick={onCopyValueToClipboard}

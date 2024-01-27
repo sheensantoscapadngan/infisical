@@ -1,4 +1,5 @@
 import {
+  createHash,
   decryptAssymmetric,
   decryptSymmetric
 } from "@app/components/utilities/cryptography/crypto";
@@ -79,9 +80,18 @@ const fetchEncryptedSendSecrets = async () => {
   return data.sendSecrets;
 };
 
-const fetchEncryptedSendSecret = async (sendSecretId: string) => {
+const fetchEncryptedSendSecret = async (
+  sendSecretId: string,
+  encryptionKey: string,
+  password?: string
+) => {
   const { data } = await apiRequest.get<{ sendSecret: EncryptedSendSecret }>(
-    `/api/v1/send-secrets/${sendSecretId}`
+    `/api/v1/send-secrets/${sendSecretId}`,
+    {
+      params: {
+        password: password ? createHash(password, encryptionKey) : undefined
+      }
+    }
   );
 
   return data.sendSecret;
@@ -110,10 +120,11 @@ export const useGetSendSecretsV1 = ({
   });
 
 export const useGetSendSecretForViewV1 = ({
-  sendSecretId,
   encryptionKey,
-  options
-}: { encryptionKey: string; sendSecretId: string } & {
+  password,
+  options,
+  sendSecretId
+}: { encryptionKey: string; sendSecretId: string; password?: string } & {
   options?: Omit<
     UseQueryOptions<
       EncryptedSendSecret,
@@ -128,6 +139,6 @@ export const useGetSendSecretForViewV1 = ({
     ...options,
     enabled: Boolean(encryptionKey && sendSecretId) && (options?.enabled ?? true),
     queryKey: secretKeys.getSendSecret(sendSecretId),
-    queryFn: async () => fetchEncryptedSendSecret(sendSecretId),
+    queryFn: async () => fetchEncryptedSendSecret(sendSecretId, encryptionKey, password),
     select: (secret: EncryptedSendSecret) => decryptSendSecretDetails(secret, encryptionKey)
   });
