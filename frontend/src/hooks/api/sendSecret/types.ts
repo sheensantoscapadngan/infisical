@@ -7,6 +7,10 @@ export type TCreateSendSecretV1DTO = {
   value: string;
 };
 
+export type TDeleteSendSecretV1DTO = {
+  id: string;
+};
+
 export type EncryptedSendSecret = {
   encryptionKeyCiphertext: string;
   encryptionKeyIV: string;

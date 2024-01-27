@@ -9,6 +9,7 @@ import { z } from "zod";
 
 type Props = {
   sendSecret: DecryptedSendSecret;
+  onDeleteSecret: (sec: DecryptedSendSecret) => void;
 };
 
 export const formSchema = z.object({
@@ -19,7 +20,7 @@ export const formSchema = z.object({
 export type TFormSchema = z.infer<typeof formSchema>;
 
 export const SendSecretItem = (props: Props) => {
-  const { sendSecret } = props;
+  const { sendSecret, onDeleteSecret } = props;
 
   const { control } = useForm<TFormSchema>({
     defaultValues: {
@@ -100,6 +101,7 @@ export const SendSecretItem = (props: Props) => {
                     variant="plain"
                     size="md"
                     className="p-0 opacity-0 group-hover:opacity-100"
+                    onClick={() => onDeleteSecret(sendSecret)}
                   >
                     <FontAwesomeIcon icon={faClose} size="lg" />
                   </IconButton>
