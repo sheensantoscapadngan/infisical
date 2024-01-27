@@ -51,8 +51,7 @@ export default function SendSecret() {
         <div className="mx-auto mb-6 w-full max-w-7xl py-6 px-6">
           <p className="mr-4 mb-4 text-3xl font-semibold text-white">Send Secrets</p>
           <div className="mb-6 text-lg text-mineshaft-300">
-            A secure and efficient way to share text-based sensitive information with intended
-            recipients
+            A secure way to share text-based sensitive information with intended recipients
           </div>
           <div className="mt-4 flex items-center space-x-2">
             <div className="w-2/5">

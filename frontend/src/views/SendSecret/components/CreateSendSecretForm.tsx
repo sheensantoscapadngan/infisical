@@ -34,8 +34,8 @@ const expirationMapping: { [key: string]: number } = {
 };
 
 const typeSchema = z.object({
-  key: z.string(),
-  value: z.string(),
+  key: z.string().min(1),
+  value: z.string().min(1),
   expiresIn: z.string(),
   password: z.string().optional()
 });
@@ -136,8 +136,8 @@ export const CreateSendSecretForm = (props: Props) => {
             render={({ field }) => (
               <FormControl
                 label="Password (optional)"
-                isError={Boolean(errors?.value)}
-                errorText={errors?.value?.message}
+                isError={Boolean(errors?.password)}
+                errorText={errors?.password?.message}
               >
                 <SecretInput
                   {...field}
