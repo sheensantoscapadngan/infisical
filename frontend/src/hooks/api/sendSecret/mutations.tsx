@@ -95,9 +95,10 @@ export const useCreateSendSecretV1 = ({
       };
 
       const { data } = await apiRequest.post(`/api/v1/send-secrets`, reqBody);
+
       return data;
     },
-    onSuccess: (_, { workspaceId, environment, secretPath }) => {},
+    onSuccess: () => {},
     ...options
   });
 };

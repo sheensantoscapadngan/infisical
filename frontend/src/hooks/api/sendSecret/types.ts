@@ -6,3 +6,28 @@ export type TCreateSendSecretV1DTO = {
   latestFileKey: UserWsKeyPair;
   value: string;
 };
+
+export type EncryptedSendSecret = {
+  encryptionKeyCiphertext: string;
+  encryptionKeyIV: string;
+  encryptionKeyTag: string;
+  expiresAt: string;
+  secretKeyCiphertext: string;
+  secretKeyIV: string;
+  secretKeyTag: string;
+  secretValueCiphertext: string;
+  secretValueIV: string;
+  secretValueTag: string;
+  url: string;
+  user: string;
+  _id: string;
+  __v: number;
+};
+
+export type DecryptedSendSecret = {
+  id: string;
+  expiresAt: Date;
+  key: string;
+  url: string;
+  value: string;
+};
