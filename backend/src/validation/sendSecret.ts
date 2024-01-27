@@ -14,3 +14,9 @@ export const CreateSendSecretV1 = z.object({
     secretValueTag: z.string().trim()
   })
 });
+
+export const DeleteSendSecretV1 = z.object({
+  params: z.object({
+    sendSecretId: z.string()
+  })
+});

@@ -50,3 +50,24 @@ export const getSendSecrets = async (req: Request, res: Response) => {
     sendSecrets
   });
 };
+
+export const deleteSendSecret = async (req: Request, res: Response) => {
+  const {
+    params: { sendSecretId }
+  } = await validateRequest(reqValidator.DeleteSendSecretV1, req);
+
+  const sendSecretToDelete = await SendSecret.findOne({
+    _id: sendSecretId,
+    user: req.user._id
+  });
+
+  if (!sendSecretToDelete) {
+    throw new Error("Failed to delete secret");
+  }
+
+  await SendSecret.deleteOne({
+    _id: sendSecretToDelete._id
+  });
+
+  return res.status(200).send();
+};
