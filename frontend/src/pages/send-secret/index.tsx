@@ -9,6 +9,7 @@ import { CreateSendSecretForm } from "@app/views/SendSecret/components/CreateSen
 import { useGetSendSecretsV1 } from "@app/hooks/api/sendSecret";
 import { useWorkspace } from "@app/context";
 import { useGetUserWsKey } from "@app/hooks/api";
+import { SendSecretListView } from "@app/views/SendSecret/components/SendSecretListView";
 
 export default function SendSecret() {
   const { t } = useTranslation();
@@ -55,22 +56,26 @@ export default function SendSecret() {
               </Button>
             </div>
           </div>
-          <div className="thin-scrollbar mt-3 overflow-y-auto overflow-x-hidden rounded-md bg-mineshaft-800 text-left text-sm text-bunker-300">
-            <div className="flex flex-col" id="dashboard">
-              <div className="flex border-b border-mineshaft-600 font-medium">
-                <div style={{ width: "2.8rem" }} className="flex-shrink-0 px-4 py-3" />
-                <div
-                  className="flex w-80 flex-shrink-0 items-center border-r border-mineshaft-600 px-4 py-2"
-                  role="button"
-                  tabIndex={0}
-                >
-                  Key
-                  <FontAwesomeIcon icon={faArrowUp} className="ml-2" />
+          {!!sendSecrets?.length && (
+            <div className="thin-scrollbar mt-3 overflow-y-auto overflow-x-hidden rounded-md bg-mineshaft-800 text-left text-sm text-bunker-300">
+              <div className="flex flex-col" id="dashboard">
+                <div className="group flex border-b border-mineshaft-600 font-medium">
+                  <div
+                    className="flex w-1/4 flex-shrink-0 items-center border-mineshaft-600 px-4 py-2"
+                    role="button"
+                    tabIndex={0}
+                  >
+                    Key
+                  </div>
+                  <div className="flex w-1/6 border-x border-mineshaft-600 px-4 py-2">
+                    Valid Until
+                  </div>
+                  <div className="flex-grow px-4 py-2">Value</div>
                 </div>
-                <div className="flex-grow px-4 py-2">Value</div>
+                <SendSecretListView sendSecrets={sendSecrets} />
               </div>
             </div>
-          </div>
+          )}
           <CreateSendSecretForm
             isAddModalOpen={isAddModalOpen}
             setAddModalState={setAddModalState}
