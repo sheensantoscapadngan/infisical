@@ -1,0 +1,103 @@
+import crypto from "crypto";
+import {
+  decryptAssymmetric,
+  encryptSymmetric
+} from "@app/components/utilities/cryptography/crypto";
+import { MutationOptions, useMutation, useQueryClient } from "@tanstack/react-query";
+import { TCreateSendSecretV1DTO } from "./types";
+import { apiRequest } from "@app/config/request";
+
+const encryptSendSecret = (encryptionKey: string, key: string, value?: string) => {
+  // encrypt key
+  const {
+    ciphertext: secretKeyCiphertext,
+    iv: secretKeyIV,
+    tag: secretKeyTag
+  } = encryptSymmetric({
+    plaintext: key,
+    key: encryptionKey
+  });
+
+  // encrypt value
+  const {
+    ciphertext: secretValueCiphertext,
+    iv: secretValueIV,
+    tag: secretValueTag
+  } = encryptSymmetric({
+    plaintext: value ?? "",
+    key: encryptionKey
+  });
+
+  return {
+    secretKeyCiphertext,
+    secretKeyIV,
+    secretKeyTag,
+    secretValueCiphertext,
+    secretValueIV,
+    secretValueTag
+  };
+};
+
+export const useCreateSendSecretV1 = ({
+  options
+}: {
+  options?: Omit<MutationOptions<{}, {}, TCreateSendSecretV1DTO>, "mutationFn">;
+} = {}) => {
+  const queryClient = useQueryClient();
+
+  return useMutation<{}, {}, TCreateSendSecretV1DTO>({
+    mutationFn: async ({ key, value, expiresIn, latestFileKey }) => {
+      const PRIVATE_KEY = localStorage.getItem("PRIVATE_KEY") as string;
+
+      // Get key for encrypting send secret encryption key
+      const privateKey = latestFileKey
+        ? decryptAssymmetric({
+            ciphertext: latestFileKey.encryptedKey,
+            nonce: latestFileKey.nonce,
+            publicKey: latestFileKey.sender.publicKey,
+            privateKey: PRIVATE_KEY
+          })
+        : crypto.randomBytes(16).toString("hex");
+
+      // generate encryption key for creating send
+      const sendSecretEncryptionKey = crypto.randomBytes(16).toString("hex");
+
+      // encrypt generated send encryption key for saving
+      const {
+        ciphertext: encryptionKeyCiphertext,
+        iv: encryptionKeyIV,
+        tag: encryptionKeyTag
+      } = encryptSymmetric({
+        plaintext: sendSecretEncryptionKey,
+        key: privateKey
+      });
+
+      const {
+        secretKeyCiphertext,
+        secretKeyIV,
+        secretKeyTag,
+        secretValueCiphertext,
+        secretValueIV,
+        secretValueTag
+      } = encryptSendSecret(sendSecretEncryptionKey, key, value);
+
+      const reqBody = {
+        encryptionKeyCiphertext,
+        encryptionKeyIV,
+        encryptionKeyTag,
+        expiresIn,
+        secretKeyCiphertext,
+        secretKeyIV,
+        secretKeyTag,
+        secretValueCiphertext,
+        secretValueIV,
+        secretValueTag
+      };
+
+      const { data } = await apiRequest.post(`/api/v1/send-secrets`, reqBody);
+      return data;
+    },
+    onSuccess: (_, { workspaceId, environment, secretPath }) => {},
+    ...options
+  });
+};

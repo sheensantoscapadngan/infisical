@@ -11,6 +11,10 @@ import {
   Select,
   SelectItem
 } from "@app/components/v2";
+import { useNotificationContext } from "@app/components/context/Notifications/NotificationProvider";
+import { useGetUserWsKey } from "@app/hooks/api";
+import { useWorkspace } from "@app/context";
+import { useCreateSendSecretV1 } from "@app/hooks/api/sendSecret/mutations";
 
 const expirations = [
   { label: "1 hour", value: "1h" },
@@ -52,8 +56,32 @@ export const CreateSendSecretForm = (props: Props) => {
     formState: { errors, isSubmitting }
   } = useForm<TFormSchema>({ resolver: zodResolver(typeSchema) });
 
-  const handleFormSubmit = async ({ key, value }: TFormSchema) => {
+  const { mutateAsync: createSendSecretV1 } = useCreateSendSecretV1();
+
+  const { currentWorkspace } = useWorkspace();
+  const workspaceId = currentWorkspace?._id || "";
+
+  const { data: decryptFileKey } = useGetUserWsKey(workspaceId);
+
+  const { createNotification } = useNotificationContext();
+
+  const handleFormSubmit = async ({ key, value, expiresIn }: TFormSchema) => {
     try {
+      // create send secret in FE
+      await createSendSecretV1({
+        key,
+        value,
+        latestFileKey: decryptFileKey!,
+        expiresIn: expirationMapping[expiresIn]
+      });
+
+      // send secret to BE for saving
+      setAddModalState(false);
+      reset();
+      createNotification({
+        type: "success",
+        text: "Copied share link to clipboard."
+      });
     } catch (error) {}
   };
 
@@ -62,7 +90,7 @@ export const CreateSendSecretForm = (props: Props) => {
       <ModalContent title="Add secret" subTitle="Create a secret for sharing">
         <form onSubmit={handleSubmit(handleFormSubmit)}>
           <FormControl label="Key" isError={Boolean(errors?.key)} errorText={errors?.key?.message}>
-            <Input placeholder="Type your secret name" />
+            <Input {...register("key")} placeholder="Type your secret name" />
           </FormControl>
           <Controller
             control={control}
