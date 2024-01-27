@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { useTranslation } from "react-i18next";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import Head from "next/head";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMagnifyingGlass, faPlus, faArrowUp } from "@fortawesome/free-solid-svg-icons";
@@ -17,7 +17,7 @@ import { DecryptedSendSecret } from "@app/hooks/api/sendSecret/types";
 export default function SendSecret() {
   const { t } = useTranslation();
   const [isAddModalOpen, setAddModalState] = useState(false);
-
+  const [searchTerm, setSearchTerm] = useState("");
   const { currentWorkspace } = useWorkspace();
   const workspaceId = currentWorkspace?._id || "";
   const { data: decryptFileKey } = useGetUserWsKey(workspaceId);
@@ -30,6 +30,16 @@ export default function SendSecret() {
   const onSendSecretCreation = (sendSecret: DecryptedSendSecret) => {
     handlePopUpOpen("confirmSendURL", sendSecret);
   };
+
+  const filteredSecrets = useMemo(() => {
+    if (!sendSecrets) {
+      return [];
+    }
+
+    return sendSecrets.filter((value) =>
+      value.key.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+  }, [searchTerm, sendSecrets]);
 
   return (
     <>
@@ -47,8 +57,10 @@ export default function SendSecret() {
           <div className="mt-4 flex items-center space-x-2">
             <div className="w-2/5">
               <Input
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
                 className="bg-mineshaft-800 placeholder-mineshaft-50 duration-200 focus:bg-mineshaft-700/80"
-                placeholder="Search by folder name, key name, comment..."
+                placeholder="Search by key name..."
                 leftIcon={<FontAwesomeIcon icon={faMagnifyingGlass} />}
               />
             </div>
@@ -64,7 +76,7 @@ export default function SendSecret() {
               </Button>
             </div>
           </div>
-          {!!sendSecrets?.length && (
+          {!!filteredSecrets.length && (
             <div className="thin-scrollbar mt-3 overflow-y-auto overflow-x-hidden rounded-md bg-mineshaft-800 text-left text-sm text-bunker-300">
               <div className="flex flex-col" id="dashboard">
                 <div className="group flex border-b border-mineshaft-600 font-medium">
@@ -80,7 +92,7 @@ export default function SendSecret() {
                   </div>
                   <div className="flex-grow px-4 py-2">Value</div>
                 </div>
-                <SendSecretListView sendSecrets={sendSecrets} />
+                <SendSecretListView sendSecrets={filteredSecrets} />
               </div>
             </div>
           )}
