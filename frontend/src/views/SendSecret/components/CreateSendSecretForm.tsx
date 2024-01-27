@@ -14,6 +14,7 @@ import {
 import { useNotificationContext } from "@app/components/context/Notifications/NotificationProvider";
 import { useCreateSendSecretV1 } from "@app/hooks/api/sendSecret/mutations";
 import { UserWsKeyPair } from "@app/hooks/api/types";
+import { DecryptedSendSecret } from "@app/hooks/api/sendSecret/types";
 
 const expirations = [
   { label: "1 hour", value: "1h" },
@@ -44,10 +45,11 @@ type Props = {
   isAddModalOpen: boolean;
   setAddModalState: (state: boolean) => void;
   decryptFileKey: UserWsKeyPair;
+  onSendSecretCreation: (sendSecret: DecryptedSendSecret) => void;
 };
 
 export const CreateSendSecretForm = (props: Props) => {
-  const { isAddModalOpen, setAddModalState } = props;
+  const { isAddModalOpen, setAddModalState, onSendSecretCreation } = props;
   const {
     register,
     handleSubmit,
@@ -63,7 +65,7 @@ export const CreateSendSecretForm = (props: Props) => {
   const handleFormSubmit = async ({ key, value, expiresIn }: TFormSchema) => {
     try {
       // create send secret in FE
-      await createSendSecretV1({
+      const sendSecret = await createSendSecretV1({
         key: key.trim(),
         value,
         latestFileKey: decryptFileKey!,
@@ -77,6 +79,7 @@ export const CreateSendSecretForm = (props: Props) => {
         type: "success",
         text: "Successfully created secret"
       });
+      onSendSecretCreation(sendSecret);
     } catch (error) {}
   };
 

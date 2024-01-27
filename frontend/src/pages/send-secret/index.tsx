@@ -10,6 +10,9 @@ import { useGetSendSecretsV1 } from "@app/hooks/api/sendSecret";
 import { useWorkspace } from "@app/context";
 import { useGetUserWsKey } from "@app/hooks/api";
 import { SendSecretListView } from "@app/views/SendSecret/components/SendSecretListView";
+import { SendSecretURLModal } from "@app/views/SendSecret/components/SendSecretListView/SendSecretURLModal";
+import { usePopUp } from "@app/hooks";
+import { DecryptedSendSecret } from "@app/hooks/api/sendSecret/types";
 
 export default function SendSecret() {
   const { t } = useTranslation();
@@ -18,10 +21,15 @@ export default function SendSecret() {
   const { currentWorkspace } = useWorkspace();
   const workspaceId = currentWorkspace?._id || "";
   const { data: decryptFileKey } = useGetUserWsKey(workspaceId);
+  const { popUp, handlePopUpToggle, handlePopUpOpen } = usePopUp(["confirmSendURL"] as const);
 
   const { data: sendSecrets } = useGetSendSecretsV1({
     decryptFileKey: decryptFileKey!
   });
+
+  const onSendSecretCreation = (sendSecret: DecryptedSendSecret) => {
+    handlePopUpOpen("confirmSendURL", sendSecret);
+  };
 
   return (
     <>
@@ -47,7 +55,7 @@ export default function SendSecret() {
             <div className="flex-grow" />
             <div className="mr-20 flex items-center">
               <Button
-                variant="outline_bg"
+                colorSchema="primary"
                 leftIcon={<FontAwesomeIcon icon={faPlus} />}
                 className="h-10 rounded-r-none"
                 onClick={() => setAddModalState(true)}
@@ -80,7 +88,9 @@ export default function SendSecret() {
             isAddModalOpen={isAddModalOpen}
             setAddModalState={setAddModalState}
             decryptFileKey={decryptFileKey!}
+            onSendSecretCreation={onSendSecretCreation}
           />
+          <SendSecretURLModal popUp={popUp} handlePopUpToggle={handlePopUpToggle} />
         </div>
       </div>
     </>

@@ -299,7 +299,7 @@ export const AppLayout = ({ children }: LayoutProps) => {
                             {currentOrg?.name.charAt(0)}
                           </div>
                           <div
-                            className="pl-2 text-sm text-mineshaft-100 text-ellipsis overflow-hidden"
+                            className="overflow-hidden text-ellipsis pl-2 text-sm text-mineshaft-100"
                             style={{ maxWidth: "140px" }}
                           >
                             {currentOrg?.name}
@@ -415,7 +415,8 @@ export const AppLayout = ({ children }: LayoutProps) => {
                     </DropdownMenu>
                   </div>
                 )}
-                {!router.asPath.includes("org") && !router.asPath.includes("send-secret") &&
+                {!router.asPath.includes("org") &&
+                  !router.asPath.includes("send-secret") &&
                   (!router.asPath.includes("personal") && currentWorkspace ? (
                     <div className="mt-5 mb-4 w-full p-3">
                       <p className="ml-1.5 mb-1 text-xs font-semibold uppercase text-gray-400">
@@ -590,9 +591,9 @@ export const AppLayout = ({ children }: LayoutProps) => {
                         <a>
                           <MenuItem
                             isSelected={router.asPath === `/send-secret`}
-                            icon="system-outline-96-groups"
+                            icon="system-outline-90-lock-closed"
                           >
-                            Send Secret
+                            Send Secrets
                           </MenuItem>
                         </a>
                       </Link>
@@ -728,7 +729,7 @@ export const AppLayout = ({ children }: LayoutProps) => {
                       </DropdownMenuItem>
                     ))}
                     {infisicalPlatformVersion && (
-                      <div className="cursor-default mb-2 mt-2 w-full pl-5 duration-200 hover:text-mineshaft-200 text-sm">
+                      <div className="mb-2 mt-2 w-full cursor-default pl-5 text-sm duration-200 hover:text-mineshaft-200">
                         <FontAwesomeIcon icon={faInfo} className="mr-4 px-[0.1rem]" />
                         Version: {infisicalPlatformVersion}
                       </div>

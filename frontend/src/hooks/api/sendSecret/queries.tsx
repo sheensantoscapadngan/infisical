@@ -13,7 +13,10 @@ export const secretKeys = {
   getSendSecret: (sendSecretId: string) => [{ sendSecretId }, "send-secrets"] as const
 };
 
-export const decryptSendSecret = (encryptedSecret: EncryptedSendSecret, encryptionKey: string) => {
+export const decryptSendSecretDetails = (
+  encryptedSecret: EncryptedSendSecret,
+  encryptionKey: string
+) => {
   const key = decryptSymmetric({
     ciphertext: encryptedSecret.secretKeyCiphertext,
     tag: encryptedSecret.secretKeyTag,
@@ -56,7 +59,7 @@ export const decryptSendSecrets = (
       key: privateEncryptionKey
     });
 
-    const { key, value } = decryptSendSecret(encryptedSecret, sendEncryptionKey);
+    const { key, value } = decryptSendSecretDetails(encryptedSecret, sendEncryptionKey);
 
     return {
       key,
@@ -126,5 +129,5 @@ export const useGetSendSecretForViewV1 = ({
     enabled: Boolean(encryptionKey && sendSecretId) && (options?.enabled ?? true),
     queryKey: secretKeys.getSendSecret(sendSecretId),
     queryFn: async () => fetchEncryptedSendSecret(sendSecretId),
-    select: (secret: EncryptedSendSecret) => decryptSendSecret(secret, encryptionKey)
+    select: (secret: EncryptedSendSecret) => decryptSendSecretDetails(secret, encryptionKey)
   });
