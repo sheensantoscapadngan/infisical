@@ -1,11 +1,13 @@
 import { Controller, useForm } from "react-hook-form";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { SecretInput, Tooltip, IconButton, Input } from "@app/components/v2";
-import { faClose, faCopy } from "@fortawesome/free-solid-svg-icons";
+import { faCheck, faClose, faCopy } from "@fortawesome/free-solid-svg-icons";
 import { AnimatePresence, motion } from "framer-motion";
 import { useWorkspace } from "@app/context";
 import { DecryptedSendSecret } from "@app/hooks/api/sendSecret/types";
 import { z } from "zod";
+import { useToggle } from "@app/hooks";
+import { useEffect } from "react";
 
 type Props = {
   sendSecret: DecryptedSendSecret;
@@ -28,8 +30,22 @@ export const SendSecretItem = (props: Props) => {
       value: sendSecret.value
     }
   });
+  const [isSecretURLCopied, setIsSecretURLCopied] = useToggle(false);
 
   const { currentWorkspace } = useWorkspace();
+
+  useEffect(() => {
+    let timer: NodeJS.Timeout;
+    if (isSecretURLCopied) {
+      timer = setTimeout(() => setIsSecretURLCopied.off(), 2000);
+    }
+    return () => clearTimeout(timer);
+  }, [isSecretURLCopied]);
+
+  const copyURLToClipboard = () => {
+    navigator.clipboard.writeText(sendSecret.url);
+    setIsSecretURLCopied.on();
+  };
 
   return (
     <>
@@ -80,8 +96,9 @@ export const SendSecretItem = (props: Props) => {
                     variant="plain"
                     size="sm"
                     className="w-0 overflow-hidden p-0 group-hover:mr-2 group-hover:w-5"
+                    onClick={copyURLToClipboard}
                   >
-                    <FontAwesomeIcon icon={faCopy} />
+                    <FontAwesomeIcon icon={isSecretURLCopied ? faCheck : faCopy} />
                   </IconButton>
                 </Tooltip>
               </div>
