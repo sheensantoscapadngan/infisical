@@ -64,7 +64,7 @@ export const CreateSendSecretForm = (props: Props) => {
     try {
       // create send secret in FE
       await createSendSecretV1({
-        key,
+        key: key.trim(),
         value,
         latestFileKey: decryptFileKey!,
         expiresIn: expirationMapping[expiresIn]
@@ -75,7 +75,7 @@ export const CreateSendSecretForm = (props: Props) => {
       reset();
       createNotification({
         type: "success",
-        text: "Copied share link to clipboard."
+        text: "Successfully created secret"
       });
     } catch (error) {}
   };

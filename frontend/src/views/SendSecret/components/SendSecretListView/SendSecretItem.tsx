@@ -52,11 +52,11 @@ export const SendSecretItem = (props: Props) => {
                 )}
               />
             </div>
-            <div className="flex  w-1/6 items-center border-x border-mineshaft-600 py-1 pl-4 pr-2">
+            <div className="flex  w-1/6 flex-shrink-0 items-center border-x border-mineshaft-600 py-1 pl-4 pr-2">
               {sendSecret.expiresAt.toUTCString()}
             </div>
             <div
-              className="flex flex-grow items-center border-mineshaft-600 py-1 pl-4 pr-2"
+              className="flex flex-grow items-center border-mineshaft-600 py-1 pl-4"
               tabIndex={0}
               role="button"
             >
@@ -67,7 +67,6 @@ export const SendSecretItem = (props: Props) => {
                 render={({ field }) => (
                   <SecretInput
                     isReadOnly
-                    isVisible
                     key="secret-value"
                     {...field}
                     containerClassName="py-1.5 rounded-md transition-all group-hover:mr-2"

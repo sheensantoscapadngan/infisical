@@ -99,7 +99,9 @@ export const useCreateSendSecretV1 = ({
 
       return data;
     },
-    onSuccess: () => {},
+    onSuccess: () => {
+      queryClient.invalidateQueries(secretKeys.getSendSecrets());
+    },
     ...options
   });
 };
