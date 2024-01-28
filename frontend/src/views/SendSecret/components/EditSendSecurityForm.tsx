@@ -11,24 +11,30 @@ type TFormSchema = z.infer<typeof typeSchema>;
 
 type Props = {
   isOpen: boolean;
-  onOpenChange: (state: boolean) => void;
-  onClose: () => void;
-  onConfirm: (password: string) => void;
+  handleOnOpenChange: (state: boolean) => void;
+  handleOnClose: () => void;
+  handleOnConfirm: (password: string) => void;
 };
 
-export const EditSendSecurityForm = ({ isOpen, onOpenChange, onClose, onConfirm }: Props) => {
+export const EditSendSecurityForm = ({
+  isOpen,
+  handleOnOpenChange,
+  handleOnClose,
+  handleOnConfirm
+}: Props) => {
   const {
     handleSubmit,
     control,
     reset,
     formState: { errors }
   } = useForm<TFormSchema>({ resolver: zodResolver(typeSchema) });
+
   return (
-    <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
+    <Modal isOpen={isOpen} onOpenChange={handleOnOpenChange}>
       <ModalContent title="Configure security settings for Send">
         <form
           onSubmit={handleSubmit(async ({ password }) => {
-            await onConfirm(password);
+            await handleOnConfirm(password);
             reset();
           })}
         >
@@ -57,7 +63,7 @@ export const EditSendSecurityForm = ({ isOpen, onOpenChange, onClose, onConfirm 
               key="layout-edit-send-security-cancel"
               variant="plain"
               colorSchema="secondary"
-              onClick={onClose}
+              onClick={handleOnClose}
             >
               Cancel
             </Button>
