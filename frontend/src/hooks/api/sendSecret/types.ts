@@ -8,6 +8,16 @@ export type TCreateSendSecretV1DTO = {
   password?: string;
 };
 
+export type TGetSendSecretsV1DTO = {
+  decryptFileKey: UserWsKeyPair;
+};
+
+export type TViewSendSecretV1DTO = {
+  encryptionKey: string;
+  sendSecretId: string;
+  password?: string;
+};
+
 export type TDeleteSendSecretV1DTO = {
   id: string;
 };

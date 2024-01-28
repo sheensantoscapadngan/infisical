@@ -6,10 +6,15 @@ import {
 import { apiRequest } from "@app/config/request";
 import { useQuery, UseQueryOptions } from "@tanstack/react-query";
 import { UserWsKeyPair } from "../types";
-import { DecryptedSendSecret, DecryptedSendSecretForView, EncryptedSendSecret } from "./types";
+import {
+  DecryptedSendSecret,
+  DecryptedSendSecretForView,
+  EncryptedSendSecret,
+  TGetSendSecretsV1DTO,
+  TViewSendSecretV1DTO
+} from "./types";
 
 export const secretKeys = {
-  // this is also used in secretSnapshot part
   getSendSecrets: () => ["send-secrets"] as const,
   getSendSecret: (sendSecretId: string) => [{ sendSecretId }, "send-secrets"] as const
 };
@@ -66,9 +71,9 @@ export const decryptSendSecrets = (
       key,
       value,
       encryptionKey: sendEncryptionKey,
+      expiresAt: new Date(encryptedSecret.expiresAt),
       id: encryptedSecret._id,
-      url: `${siteURL}/send-secret/view/${encryptedSecret._id}/${sendEncryptionKey}`,
-      expiresAt: new Date(encryptedSecret.expiresAt)
+      url: `${siteURL}/send-secret/view/${encryptedSecret._id}/${sendEncryptionKey}`
     };
   });
 };
@@ -81,7 +86,7 @@ const fetchEncryptedSendSecrets = async () => {
   return data.sendSecrets;
 };
 
-const fetchEncryptedSendSecret = async (
+const viewEncryptedSendSecret = async (
   sendSecretId: string,
   encryptionKey: string,
   password?: string
@@ -101,7 +106,7 @@ const fetchEncryptedSendSecret = async (
 export const useGetSendSecretsV1 = ({
   decryptFileKey,
   options
-}: { decryptFileKey: UserWsKeyPair } & {
+}: TGetSendSecretsV1DTO & {
   options?: Omit<
     UseQueryOptions<
       EncryptedSendSecret[],
@@ -125,7 +130,7 @@ export const useViewSendSecretV1 = ({
   password,
   options,
   sendSecretId
-}: { encryptionKey: string; sendSecretId: string; password?: string } & {
+}: TViewSendSecretV1DTO & {
   options?: Omit<
     UseQueryOptions<
       EncryptedSendSecret,
@@ -140,6 +145,6 @@ export const useViewSendSecretV1 = ({
     ...options,
     enabled: Boolean(encryptionKey && sendSecretId) && (options?.enabled ?? true),
     queryKey: secretKeys.getSendSecret(sendSecretId),
-    queryFn: async () => fetchEncryptedSendSecret(sendSecretId, encryptionKey, password),
+    queryFn: async () => viewEncryptedSendSecret(sendSecretId, encryptionKey, password),
     select: (secret: EncryptedSendSecret) => decryptSendSecretDetails(secret, encryptionKey)
   });

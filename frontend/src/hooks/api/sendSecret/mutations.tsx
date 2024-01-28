@@ -14,7 +14,7 @@ import {
 import { apiRequest } from "@app/config/request";
 import { decryptSendSecrets, secretKeys } from "./queries";
 
-const encryptSendSecret = (encryptionKey: string, key: string, value?: string) => {
+const encryptSendSecret = (encryptionKey: string, key: string, value: string) => {
   // encrypt key
   const {
     ciphertext: secretKeyCiphertext,
@@ -31,7 +31,7 @@ const encryptSendSecret = (encryptionKey: string, key: string, value?: string) =
     iv: secretValueIV,
     tag: secretValueTag
   } = encryptSymmetric({
-    plaintext: value ?? "",
+    plaintext: value,
     key: encryptionKey
   });
 
