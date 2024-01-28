@@ -1,3 +1,5 @@
+import { useCallback } from "react";
+
 import { useNotificationContext } from "@app/components/context/Notifications/NotificationProvider";
 import { DeleteActionModal } from "@app/components/v2";
 import { usePopUp } from "@app/hooks";
@@ -6,8 +8,7 @@ import {
   useUpdateSendSecretSecurityV1
 } from "@app/hooks/api/sendSecret/mutations";
 import { DecryptedSendSecret } from "@app/hooks/api/sendSecret/types";
-import { UsePopUpState } from "@app/hooks/usePopUp";
-import { useCallback } from "react";
+
 import { EditSendSecurityForm } from "../EditSendSecurityForm";
 import { SendSecretItem } from "./SendSecretItem";
 

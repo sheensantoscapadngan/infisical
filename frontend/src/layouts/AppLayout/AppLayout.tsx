@@ -587,10 +587,10 @@ export const AppLayout = ({ children }: LayoutProps) => {
                           </MenuItem>
                         </a>
                       </Link>
-                      <Link href={`/send-secret`} passHref>
+                      <Link href="/send-secret" passHref>
                         <a>
                           <MenuItem
-                            isSelected={router.asPath === `/send-secret`}
+                            isSelected={router.asPath === "/send-secret"}
                             icon="system-outline-90-lock-closed"
                           >
                             Send Secrets

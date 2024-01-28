@@ -1,18 +1,21 @@
 import crypto from "crypto";
+
+import { MutationOptions, useMutation, useQueryClient } from "@tanstack/react-query";
+
 import {
   createHash,
   decryptAssymmetric,
   encryptSymmetric
 } from "@app/components/utilities/cryptography/crypto";
-import { MutationOptions, useMutation, useQueryClient } from "@tanstack/react-query";
+import { apiRequest } from "@app/config/request";
+
+import { decryptSendSecrets, secretKeys } from "./queries";
 import {
   DecryptedSendSecret,
   TCreateSendSecretV1DTO,
   TDeleteSendSecretV1DTO,
   TUpdateSendSecretSecurityV1DTO
 } from "./types";
-import { apiRequest } from "@app/config/request";
-import { decryptSendSecrets, secretKeys } from "./queries";
 
 const encryptSendSecret = (encryptionKey: string, key: string, value: string) => {
   // encrypt key
@@ -102,7 +105,7 @@ export const useCreateSendSecretV1 = ({
         password: password ? createHash(password, sendSecretEncryptionKey) : undefined
       };
 
-      const { data } = await apiRequest.post(`/api/v1/send-secrets`, reqBody);
+      const { data } = await apiRequest.post("/api/v1/send-secrets", reqBody);
       return decryptSendSecrets([data.sendSecret], latestFileKey)[0];
     },
     onSuccess: () => {

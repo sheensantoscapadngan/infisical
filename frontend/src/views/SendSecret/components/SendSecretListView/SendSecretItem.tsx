@@ -1,13 +1,14 @@
-import { Controller, useForm } from "react-hook-form";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { SecretInput, Tooltip, IconButton, Input } from "@app/components/v2";
-import { faCheck, faClose, faCopy, faLock } from "@fortawesome/free-solid-svg-icons";
-import { AnimatePresence, motion } from "framer-motion";
-import { useWorkspace } from "@app/context";
-import { DecryptedSendSecret } from "@app/hooks/api/sendSecret/types";
-import { z } from "zod";
-import { useToggle } from "@app/hooks";
 import { useEffect } from "react";
+import { Controller, useForm } from "react-hook-form";
+import { faCheck, faClose, faCopy, faLock } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { AnimatePresence, motion } from "framer-motion";
+import { z } from "zod";
+
+import { IconButton, Input,SecretInput, Tooltip } from "@app/components/v2";
+import { useWorkspace } from "@app/context";
+import { useToggle } from "@app/hooks";
+import { DecryptedSendSecret } from "@app/hooks/api/sendSecret/types";
 import { UsePopUpState } from "@app/hooks/usePopUp";
 
 type Props = {
@@ -53,8 +54,7 @@ export const SendSecretItem = (props: Props) => {
   };
 
   return (
-    <>
-      <form>
+    <form>
         <div className="border-b border-mineshaft-600 bg-mineshaft-800 shadow-none hover:bg-mineshaft-700">
           <div className="group flex">
             <div className="flex h-11 w-1/4 flex-shrink-0 items-center px-4 py-2">
@@ -146,6 +146,5 @@ export const SendSecretItem = (props: Props) => {
           </div>
         </div>
       </form>
-    </>
   );
 };

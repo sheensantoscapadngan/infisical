@@ -1,13 +1,14 @@
-import { useNotificationContext } from "@app/components/context/Notifications/NotificationProvider";
-import { Button, Input, TextArea } from "@app/components/v2";
-import { useViewSendSecretV1 } from "@app/hooks/api/sendSecret/queries";
-import { AxiosError } from "axios";
+import { useCallback, useState } from "react";
+import { useTranslation } from "react-i18next";
 import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useCallback, useState } from "react";
-import { useTranslation } from "react-i18next";
+import { AxiosError } from "axios";
+
+import { useNotificationContext } from "@app/components/context/Notifications/NotificationProvider";
+import { Button, Input, TextArea } from "@app/components/v2";
+import { useViewSendSecretV1 } from "@app/hooks/api/sendSecret/queries";
 
 export default function ViewSendSecret() {
   const { t } = useTranslation();
@@ -56,8 +57,7 @@ export default function ViewSendSecret() {
         </div>
       </Link>
       {isAccessError(error) && (
-        <>
-          <div className="mx-auto flex flex-col items-center justify-center sm:w-5/12 lg:w-4/12">
+        <div className="mx-auto flex flex-col items-center justify-center sm:w-5/12 lg:w-4/12">
             <h1 className="mb-5 bg-gradient-to-b from-white to-bunker-200 bg-clip-text text-center text-xl font-medium text-transparent">
               Infisical
             </h1>
@@ -81,7 +81,6 @@ export default function ViewSendSecret() {
               Unlock
             </Button>
           </div>
-        </>
       )}
       {!!sendSecret && (
         <>

@@ -1,7 +1,8 @@
-import { Button, FormControl, Modal, ModalContent, SecretInput } from "@app/components/v2";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
+
+import { Button, FormControl, Modal, ModalContent, SecretInput } from "@app/components/v2";
 
 const typeSchema = z.object({
   password: z.string()

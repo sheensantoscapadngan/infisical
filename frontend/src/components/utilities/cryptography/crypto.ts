@@ -1,5 +1,7 @@
-import argon2 from "argon2-browser";
 import crypto from "crypto";
+
+import argon2 from "argon2-browser";
+
 import aes from "./aes-256-gcm";
 
 const nacl = require("tweetnacl");

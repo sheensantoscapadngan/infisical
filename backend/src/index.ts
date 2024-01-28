@@ -50,13 +50,13 @@ import {
   secretImps as v1SecretImpsRouter,
   secret as v1SecretRouter,
   secretsFolder as v1SecretsFolder,
+  sendSecret as v1SendSecretRouter,
   serviceToken as v1ServiceTokenRouter,
   signup as v1SignupRouter,
   universalAuth as v1UniversalAuthRouter,
   userAction as v1UserActionRouter,
   user as v1UserRouter,
   webhooks as v1WebhooksRouter,
-  sendSecret as v1SendSecretRouter,
   workspace as v1WorkspaceRouter
 } from "./routes/v1";
 import {
