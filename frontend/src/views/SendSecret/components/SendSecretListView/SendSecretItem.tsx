@@ -95,6 +95,17 @@ export const SendSecretItem = (props: Props) => {
                 )}
               />
               <div key="actions" className="flex h-8 flex-shrink-0 self-start transition-all">
+                <Tooltip content="Copy Send URL">
+                  <IconButton
+                    ariaLabel="copy-value"
+                    variant="plain"
+                    size="sm"
+                    className="w-0 overflow-hidden p-0 group-hover:mr-2 group-hover:w-5"
+                    onClick={copyURLToClipboard}
+                  >
+                    <FontAwesomeIcon icon={isSecretURLCopied ? faCheck : faCopy} />
+                  </IconButton>
+                </Tooltip>
                 <Tooltip content="Manage auth method">
                   <IconButton
                     onClick={() => {
@@ -107,17 +118,6 @@ export const SendSecretItem = (props: Props) => {
                     className="w-0 overflow-hidden p-0 group-hover:mr-2 group-hover:w-5"
                   >
                     <FontAwesomeIcon icon={faLock} />
-                  </IconButton>
-                </Tooltip>
-                <Tooltip content="Copy Send URL">
-                  <IconButton
-                    ariaLabel="copy-value"
-                    variant="plain"
-                    size="sm"
-                    className="w-0 overflow-hidden p-0 group-hover:mr-2 group-hover:w-5"
-                    onClick={copyURLToClipboard}
-                  >
-                    <FontAwesomeIcon icon={isSecretURLCopied ? faCheck : faCopy} />
                   </IconButton>
                 </Tooltip>
               </div>
