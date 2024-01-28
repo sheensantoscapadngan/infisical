@@ -93,7 +93,7 @@ export default function ViewSendSecret() {
             <h1 className="mb-5 bg-gradient-to-b from-white to-bunker-200 bg-clip-text text-center text-xl font-medium text-transparent">
               Infisical
             </h1>
-            <h2 className="mb-2 bg-black bg-gradient-to-b from-white to-bunker-200 bg-clip-text text-left text-base font-normal text-transparent">
+            <h2 className="mb-2 max-w-md bg-black bg-gradient-to-b from-white to-bunker-200 bg-clip-text text-left text-base font-normal text-transparent">
               {sendSecret.key}
             </h2>
             <TextArea

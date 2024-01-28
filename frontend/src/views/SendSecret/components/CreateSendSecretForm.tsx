@@ -30,7 +30,8 @@ const expirationMapping: { [key: string]: number } = {
   "1d": 86400,
   "2d": 172800,
   "3d": 259200,
-  "7d": 604800
+  "7d": 604800,
+  "30d": 2592000
 };
 
 const typeSchema = z.object({
@@ -155,7 +156,7 @@ export const CreateSendSecretForm = (props: Props) => {
               className="mr-4"
               type="submit"
             >
-              Create Send
+              Create
             </Button>
             <Button
               key="layout-cancel-create-project"

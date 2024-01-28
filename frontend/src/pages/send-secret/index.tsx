@@ -44,7 +44,7 @@ export default function SendSecret() {
   return (
     <>
       <Head>
-        <title>{t("common.head-title", { title: t("settings.org.title") })}</title>
+        <title>{t("common.head-title", { title: t("send.title") })}</title>
         <link rel="icon" href="/infisical.ico" />
       </Head>
       <div className="container mx-auto flex flex-col justify-between bg-bunker-800 text-white">
