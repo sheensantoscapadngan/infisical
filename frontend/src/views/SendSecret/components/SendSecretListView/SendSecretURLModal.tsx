@@ -1,7 +1,8 @@
+import { useCallback } from "react";
+
 import { Button, Modal, ModalContent, TextArea } from "@app/components/v2";
 import { DecryptedSendSecret } from "@app/hooks/api/sendSecret/types";
 import { UsePopUpState } from "@app/hooks/usePopUp";
-import { useCallback } from "react";
 
 type Props = {
   popUp: UsePopUpState<["confirmSendURL"]>;
@@ -19,7 +20,7 @@ export const SendSecretURLModal = ({ popUp, handlePopUpToggle }: Props) => {
 
   return (
     <Modal
-      isOpen={true}
+      isOpen={popUp.confirmSendURL.isOpen}
       onOpenChange={(open) => {
         handlePopUpToggle("confirmSendURL", open);
       }}

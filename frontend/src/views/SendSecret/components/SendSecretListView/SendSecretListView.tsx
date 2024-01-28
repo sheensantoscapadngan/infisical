@@ -74,6 +74,7 @@ export const SendSecretListView = (props: Props) => {
         {sendSecrets.map((sendSecret) => {
           return (
             <SendSecretItem
+              key={sendSecret.id}
               sendSecret={sendSecret}
               onDeleteSecret={onDeleteSecret}
               handlePopUpOpen={handlePopUpOpen}

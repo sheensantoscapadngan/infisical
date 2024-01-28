@@ -36,7 +36,7 @@ export default function ViewSendSecret() {
     });
   }, [sendSecret]);
 
-  const isAccessError = (error: unknown) => (error as AxiosError)?.response?.status === 401;
+  const isAccessError = (error as AxiosError)?.response?.status === 401;
 
   const onUnlockSecret = () => {
     refetch();
@@ -56,31 +56,31 @@ export default function ViewSendSecret() {
           <Image src="/images/gradientLogo.svg" height={90} width={120} alt="Infisical logo" />
         </div>
       </Link>
-      {isAccessError(error) && (
+      {isAccessError && (
         <div className="mx-auto flex flex-col items-center justify-center sm:w-5/12 lg:w-4/12">
-            <h1 className="mb-5 bg-gradient-to-b from-white to-bunker-200 bg-clip-text text-center text-xl font-medium text-transparent">
-              Infisical
-            </h1>
-            <p className="justify mb-5 text-gray-400">{t("send.view-secret-description")}</p>
-            <Input
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              type="password"
-              placeholder="Enter your password..."
-              isRequired
-              autoComplete="current-password"
-              id="current-password"
-              className="select:-webkit-autofill:focus h-10"
-            />
-            <Button
-              key="view-send-secret-unlock-submit"
-              className="mr-4 mt-6 self-center pr-6 pl-6"
-              type="submit"
-              onClick={onUnlockSecret}
-            >
-              Unlock
-            </Button>
-          </div>
+          <h1 className="mb-5 bg-gradient-to-b from-white to-bunker-200 bg-clip-text text-center text-xl font-medium text-transparent">
+            Infisical
+          </h1>
+          <p className="justify mb-5 text-gray-400">{t("send.view-secret-description")}</p>
+          <Input
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            type="password"
+            placeholder="Enter your password..."
+            isRequired
+            autoComplete="current-password"
+            id="current-password"
+            className="select:-webkit-autofill:focus h-10"
+          />
+          <Button
+            key="view-send-secret-unlock-submit"
+            className="mr-4 mt-6 self-center pr-6 pl-6"
+            type="submit"
+            onClick={onUnlockSecret}
+          >
+            Unlock
+          </Button>
+        </div>
       )}
       {!!sendSecret && (
         <>

@@ -128,7 +128,7 @@ export const useDeleteSendSecretV1 = ({
 
       return data;
     },
-    onSuccess: (_) => {
+    onSuccess: () => {
       queryClient.invalidateQueries(secretKeys.getSendSecrets());
     },
     ...options
@@ -150,7 +150,7 @@ export const useUpdateSendSecretSecurityV1 = ({
 
       return data;
     },
-    onSuccess: (_) => {
+    onSuccess: () => {
       queryClient.invalidateQueries(secretKeys.getSendSecrets());
     },
     ...options
