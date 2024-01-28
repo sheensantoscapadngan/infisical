@@ -120,7 +120,7 @@ export const useGetSendSecretsV1 = ({
     select: (secrets: EncryptedSendSecret[]) => decryptSendSecrets(secrets, decryptFileKey)
   });
 
-export const useGetSendSecretForViewV1 = ({
+export const useViewSendSecretV1 = ({
   encryptionKey,
   password,
   options,

@@ -1,6 +1,6 @@
 import { useNotificationContext } from "@app/components/context/Notifications/NotificationProvider";
 import { Button, Input, TextArea } from "@app/components/v2";
-import { useGetSendSecretForViewV1 } from "@app/hooks/api/sendSecret/queries";
+import { useViewSendSecretV1 } from "@app/hooks/api/sendSecret/queries";
 import { AxiosError } from "axios";
 import Head from "next/head";
 import Image from "next/image";
@@ -30,7 +30,7 @@ export default function ViewSendSecret() {
     data: sendSecret,
     error,
     refetch
-  } = useGetSendSecretForViewV1({
+  } = useViewSendSecretV1({
     encryptionKey: encryptionKey as string,
     sendSecretId: id as string,
     password
