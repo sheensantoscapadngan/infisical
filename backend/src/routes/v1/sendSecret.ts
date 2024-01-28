@@ -8,14 +8,19 @@ import {
   viewSendSecret
 } from "../../controllers/v1/sendSecretController";
 import { viewSendSecretLimit } from "../../helpers";
-import { requireAuth } from "../../middleware";
-import { AuthMode } from "../../variables";
+import { requireAuth, requireWorkspaceAuth } from "../../middleware";
+import { ADMIN, AuthMode, MEMBER } from "../../variables";
+
 const router = express.Router();
 
 router.post(
   "/",
   requireAuth({
     acceptedAuthModes: [AuthMode.JWT]
+  }),
+  requireWorkspaceAuth({
+    acceptedRoles: [ADMIN, MEMBER],
+    locationWorkspaceId: "body"
   }),
   createSendSecret
 );
@@ -25,6 +30,10 @@ router.patch(
   requireAuth({
     acceptedAuthModes: [AuthMode.JWT]
   }),
+  requireWorkspaceAuth({
+    acceptedRoles: [ADMIN, MEMBER],
+    locationWorkspaceId: "body"
+  }),
   updateSendSecretSecurity
 );
 
@@ -32,6 +41,10 @@ router.get(
   "/",
   requireAuth({
     acceptedAuthModes: [AuthMode.JWT]
+  }),
+  requireWorkspaceAuth({
+    acceptedRoles: [ADMIN, MEMBER],
+    locationWorkspaceId: "query"
   }),
   getSendSecrets
 );
@@ -43,6 +56,10 @@ router.delete(
   "/:sendSecretId",
   requireAuth({
     acceptedAuthModes: [AuthMode.JWT]
+  }),
+  requireWorkspaceAuth({
+    acceptedRoles: [ADMIN, MEMBER],
+    locationWorkspaceId: "query"
   }),
   deleteSendSecret
 );

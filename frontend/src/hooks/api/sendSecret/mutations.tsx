@@ -56,7 +56,7 @@ export const useCreateSendSecretV1 = ({
   const queryClient = useQueryClient();
 
   return useMutation<DecryptedSendSecret, {}, TCreateSendSecretV1DTO>({
-    mutationFn: async ({ key, value, expiresIn, latestFileKey, password }) => {
+    mutationFn: async ({ key, value, expiresIn, latestFileKey, password, workspaceId }) => {
       const PRIVATE_KEY = localStorage.getItem("PRIVATE_KEY") as string;
 
       // Get key for encrypting send secret encryption key
@@ -102,14 +102,14 @@ export const useCreateSendSecretV1 = ({
         secretValueCiphertext,
         secretValueIV,
         secretValueTag,
+        workspaceId,
         password: password ? createHash(password, sendSecretEncryptionKey) : undefined
       };
 
       const { data } = await apiRequest.post("/api/v1/send-secrets", reqBody);
+      queryClient.invalidateQueries(secretKeys.getSendSecrets(workspaceId));
+
       return decryptSendSecrets([data.sendSecret], latestFileKey)[0];
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries(secretKeys.getSendSecrets());
     },
     ...options
   });
@@ -123,13 +123,15 @@ export const useDeleteSendSecretV1 = ({
   const queryClient = useQueryClient();
 
   return useMutation<{}, {}, TDeleteSendSecretV1DTO>({
-    mutationFn: async ({ id }) => {
-      const { data } = await apiRequest.delete(`/api/v1/send-secrets/${id}`);
+    mutationFn: async ({ id, workspaceId }) => {
+      const { data } = await apiRequest.delete(`/api/v1/send-secrets/${id}`, {
+        params: {
+          workspaceId
+        }
+      });
 
+      queryClient.invalidateQueries(secretKeys.getSendSecrets(workspaceId));
       return data;
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries(secretKeys.getSendSecrets());
     },
     ...options
   });
@@ -143,16 +145,16 @@ export const useUpdateSendSecretSecurityV1 = ({
   const queryClient = useQueryClient();
 
   return useMutation<{}, {}, TUpdateSendSecretSecurityV1DTO>({
-    mutationFn: async ({ id, password, encryptionKey }) => {
+    mutationFn: async ({ id, password, encryptionKey, workspaceId }) => {
       const { data } = await apiRequest.patch(`/api/v1/send-secrets/${id}/security`, {
+        workspaceId,
         password: createHash(password, encryptionKey)
       });
 
+      queryClient.invalidateQueries(secretKeys.getSendSecrets(workspaceId));
       return data;
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries(secretKeys.getSendSecrets());
-    },
+
     ...options
   });
 };

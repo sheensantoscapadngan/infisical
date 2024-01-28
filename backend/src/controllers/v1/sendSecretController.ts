@@ -16,7 +16,8 @@ export const createSendSecret = async (req: Request, res: Response) => {
       secretValueCiphertext,
       secretValueIV,
       secretValueTag,
-      password
+      password,
+      workspaceId
     }
   } = await validateRequest(reqValidator.CreateSendSecretV1, req);
 
@@ -35,7 +36,8 @@ export const createSendSecret = async (req: Request, res: Response) => {
     secretValueCiphertext,
     secretValueIV,
     secretValueTag,
-    password
+    password,
+    workspace: workspaceId
   }).save();
 
   return res.status(200).send({
@@ -44,8 +46,13 @@ export const createSendSecret = async (req: Request, res: Response) => {
 };
 
 export const getSendSecrets = async (req: Request, res: Response) => {
+  const {
+    query: { workspaceId }
+  } = await validateRequest(reqValidator.GetSendSecretsV1, req);
+
   const sendSecrets = await SendSecret.find({
-    user: req.user._id
+    user: req.user._id,
+    workspace: workspaceId
   });
 
   return res.status(200).send({
@@ -78,12 +85,14 @@ export const viewSendSecret = async (req: Request, res: Response) => {
 
 export const deleteSendSecret = async (req: Request, res: Response) => {
   const {
-    params: { sendSecretId }
+    params: { sendSecretId },
+    query: { workspaceId }
   } = await validateRequest(reqValidator.DeleteSendSecretV1, req);
 
   const sendSecretToDelete = await SendSecret.findOne({
     _id: sendSecretId,
-    user: req.user._id
+    user: req.user._id,
+    workspace: workspaceId
   });
 
   if (!sendSecretToDelete) {
@@ -100,12 +109,13 @@ export const deleteSendSecret = async (req: Request, res: Response) => {
 export const updateSendSecretSecurity = async (req: Request, res: Response) => {
   const {
     params: { sendSecretId },
-    body: { password }
+    body: { password, workspaceId }
   } = await validateRequest(reqValidator.UpdateSendSecretSecurityV1, req);
 
   const sendSecretToUpdate = await SendSecret.findOne({
     _id: sendSecretId,
-    user: req.user._id
+    user: req.user._id,
+    workspace: workspaceId
   });
 
   if (!sendSecretToUpdate) {

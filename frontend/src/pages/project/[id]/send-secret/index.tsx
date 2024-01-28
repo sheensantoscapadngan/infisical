@@ -24,7 +24,8 @@ export default function SendSecret() {
   const { popUp, handlePopUpToggle, handlePopUpOpen } = usePopUp(["confirmSendURL"] as const);
 
   const { data: sendSecrets } = useGetSendSecretsV1({
-    decryptFileKey: decryptFileKey!
+    decryptFileKey: decryptFileKey!,
+    workspaceId
   });
 
   const onSendSecretCreation = useCallback((sendSecret: DecryptedSendSecret) => {

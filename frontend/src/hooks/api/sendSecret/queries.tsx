@@ -17,7 +17,7 @@ import {
 } from "./types";
 
 export const secretKeys = {
-  getSendSecrets: () => ["send-secrets"] as const,
+  getSendSecrets: (workspaceId: string) => [{ workspaceId }, "send-secrets"] as const,
   getSendSecret: (sendSecretId: string) => [{ sendSecretId }, "send-secrets"] as const
 };
 
@@ -80,9 +80,14 @@ export const decryptSendSecrets = (
   });
 };
 
-const fetchEncryptedSendSecrets = async () => {
+const fetchEncryptedSendSecrets = async (workspaceId: string) => {
   const { data } = await apiRequest.get<{ sendSecrets: EncryptedSendSecret[] }>(
-    "/api/v1/send-secrets"
+    "/api/v1/send-secrets",
+    {
+      params: {
+        workspaceId
+      }
+    }
   );
 
   return data.sendSecrets;
@@ -107,6 +112,7 @@ const viewEncryptedSendSecret = async (
 
 export const useGetSendSecretsV1 = ({
   decryptFileKey,
+  workspaceId,
   options
 }: TGetSendSecretsV1DTO & {
   options?: Omit<
@@ -121,9 +127,9 @@ export const useGetSendSecretsV1 = ({
 }) =>
   useQuery({
     ...options,
-    enabled: Boolean(decryptFileKey) && (options?.enabled ?? true),
-    queryKey: secretKeys.getSendSecrets(),
-    queryFn: async () => fetchEncryptedSendSecrets(),
+    enabled: Boolean(decryptFileKey && workspaceId) && (options?.enabled ?? true),
+    queryKey: secretKeys.getSendSecrets(workspaceId),
+    queryFn: async () => fetchEncryptedSendSecrets(workspaceId),
     select: (secrets: EncryptedSendSecret[]) => decryptSendSecrets(secrets, decryptFileKey)
   });
 

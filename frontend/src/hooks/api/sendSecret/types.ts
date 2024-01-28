@@ -6,10 +6,12 @@ export type TCreateSendSecretV1DTO = {
   latestFileKey: UserWsKeyPair;
   value: string;
   password?: string;
+  workspaceId: string;
 };
 
 export type TGetSendSecretsV1DTO = {
   decryptFileKey: UserWsKeyPair;
+  workspaceId: string;
 };
 
 export type TViewSendSecretV1DTO = {
@@ -20,12 +22,14 @@ export type TViewSendSecretV1DTO = {
 
 export type TDeleteSendSecretV1DTO = {
   id: string;
+  workspaceId: string;
 };
 
 export type TUpdateSendSecretSecurityV1DTO = {
   id: string;
   password: string;
   encryptionKey: string;
+  workspaceId: string;
 };
 
 export type EncryptedSendSecret = {
@@ -40,7 +44,8 @@ export type EncryptedSendSecret = {
   secretValueIV: string;
   secretValueTag: string;
   url: string;
-  user: string;
+  userId: string;
+  workspaceId: string;
   _id: string;
   __v: number;
 };

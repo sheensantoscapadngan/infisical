@@ -11,6 +11,7 @@ import { DecryptedSendSecret } from "@app/hooks/api/sendSecret/types";
 
 import { EditSendSecurityForm } from "../EditSendSecurityForm";
 import { SendSecretItem } from "./SendSecretItem";
+import { useWorkspace } from "@app/context";
 
 type Props = {
   sendSecrets: DecryptedSendSecret[];
@@ -23,12 +24,17 @@ export const SendSecretListView = (props: Props) => {
     "editSendSecurity"
   ] as const);
 
+  const { currentWorkspace } = useWorkspace();
+  const workspaceId = currentWorkspace?._id || "";
   const { createNotification } = useNotificationContext();
   const { mutateAsync: deleteSendSecretV1 } = useDeleteSendSecretV1();
   const { mutateAsync: updateSendSecretSecurityV1 } = useUpdateSendSecretSecurityV1();
 
   const handleSecretDelete = useCallback(async () => {
-    await deleteSendSecretV1({ id: (popUp.deleteSendSecret?.data as DecryptedSendSecret).id });
+    await deleteSendSecretV1({
+      id: (popUp.deleteSendSecret?.data as DecryptedSendSecret).id,
+      workspaceId
+    });
     handlePopUpClose("deleteSendSecret");
     createNotification({
       type: "success",
@@ -40,6 +46,7 @@ export const SendSecretListView = (props: Props) => {
     async (password: string) => {
       await updateSendSecretSecurityV1({
         password,
+        workspaceId,
         id: (popUp.editSendSecurity?.data as DecryptedSendSecret).id,
         encryptionKey: (popUp.editSendSecurity?.data as DecryptedSendSecret).encryptionKey
       });

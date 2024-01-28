@@ -12,13 +12,17 @@ export const CreateSendSecretV1 = z.object({
     secretValueCiphertext: z.string().trim(),
     secretValueIV: z.string().trim(),
     secretValueTag: z.string().trim(),
-    password: z.string().optional()
+    password: z.string().optional(),
+    workspaceId: z.string()
   })
 });
 
 export const DeleteSendSecretV1 = z.object({
   params: z.object({
     sendSecretId: z.string()
+  }),
+  query: z.object({
+    workspaceId: z.string()
   })
 });
 
@@ -31,8 +35,15 @@ export const ViewSendSecretV1 = z.object({
   })
 });
 
+export const GetSendSecretsV1 = z.object({
+  query: z.object({
+    workspaceId: z.string()
+  })
+});
+
 export const UpdateSendSecretSecurityV1 = z.object({
   body: z.object({
+    workspaceId: z.string(),
     password: z.string().min(1)
   }),
   params: z.object({

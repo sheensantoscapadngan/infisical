@@ -12,6 +12,7 @@ export interface ISendSecret {
   secretValueIV: string;
   secretValueTag: string;
   user: Types.ObjectId;
+  workspace: Types.ObjectId;
   password?: string;
 }
 
@@ -59,7 +60,13 @@ const sendSecretSchema = new Schema<ISendSecret>(
     },
     user: {
       type: Schema.Types.ObjectId,
+      required: true,
       ref: "User"
+    },
+    workspace: {
+      type: Schema.Types.ObjectId,
+      ref: "Workspace",
+      required: true
     },
     password: {
       type: String,

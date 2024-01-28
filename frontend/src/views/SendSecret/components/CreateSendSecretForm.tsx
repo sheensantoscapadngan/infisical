@@ -17,6 +17,7 @@ import {
 import { useCreateSendSecretV1 } from "@app/hooks/api/sendSecret/mutations";
 import { DecryptedSendSecret } from "@app/hooks/api/sendSecret/types";
 import { UserWsKeyPair } from "@app/hooks/api/types";
+import { useWorkspace } from "@app/context";
 
 const expirations = [
   { label: "1 hour", value: "1h" },
@@ -65,15 +66,18 @@ export const CreateSendSecretForm = (props: Props) => {
 
   const { mutateAsync: createSendSecretV1 } = useCreateSendSecretV1();
   const { createNotification } = useNotificationContext();
+  const { currentWorkspace } = useWorkspace();
+  const workspaceId = currentWorkspace?._id || "";
 
   const handleFormSubmit = async ({ key, value, expiresIn, password }: TFormSchema) => {
     try {
       const sendSecret = await createSendSecretV1({
-        key: key.trim(),
+        password,
+        workspaceId,
         value,
-        latestFileKey: decryptFileKey!,
         expiresIn: expirationMapping[expiresIn],
-        password
+        key: key.trim(),
+        latestFileKey: decryptFileKey!
       });
 
       setAddModalState(false);
