@@ -1,17 +1,22 @@
 import { Controller, useForm } from "react-hook-form";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { SecretInput, Tooltip, IconButton, Input } from "@app/components/v2";
-import { faCheck, faClose, faCopy } from "@fortawesome/free-solid-svg-icons";
+import { faCheck, faClose, faCopy, faLock } from "@fortawesome/free-solid-svg-icons";
 import { AnimatePresence, motion } from "framer-motion";
 import { useWorkspace } from "@app/context";
 import { DecryptedSendSecret } from "@app/hooks/api/sendSecret/types";
 import { z } from "zod";
 import { useToggle } from "@app/hooks";
 import { useEffect } from "react";
+import { UsePopUpState } from "@app/hooks/usePopUp";
 
 type Props = {
   sendSecret: DecryptedSendSecret;
   onDeleteSecret: (sec: DecryptedSendSecret) => void;
+  handlePopUpOpen: (
+    popUpName: keyof UsePopUpState<["deleteSendSecret", "editSendSecurity"]>,
+    data?: DecryptedSendSecret
+  ) => void;
 };
 
 export const formSchema = z.object({
@@ -22,7 +27,7 @@ export const formSchema = z.object({
 export type TFormSchema = z.infer<typeof formSchema>;
 
 export const SendSecretItem = (props: Props) => {
-  const { sendSecret, onDeleteSecret } = props;
+  const { handlePopUpOpen, sendSecret, onDeleteSecret } = props;
 
   const { control } = useForm<TFormSchema>({
     defaultValues: {
@@ -90,6 +95,20 @@ export const SendSecretItem = (props: Props) => {
                 )}
               />
               <div key="actions" className="flex h-8 flex-shrink-0 self-start transition-all">
+                <Tooltip content="Manage auth method">
+                  <IconButton
+                    onClick={() => {
+                      handlePopUpOpen("editSendSecurity", sendSecret);
+                    }}
+                    size="lg"
+                    colorSchema="primary"
+                    variant="plain"
+                    ariaLabel="update"
+                    className="w-0 overflow-hidden p-0 group-hover:mr-2 group-hover:w-5"
+                  >
+                    <FontAwesomeIcon icon={faLock} />
+                  </IconButton>
+                </Tooltip>
                 <Tooltip content="Copy Send URL">
                   <IconButton
                     ariaLabel="copy-value"

@@ -13,7 +13,8 @@ type Props = {
 export const SendSecretListView = (props: Props) => {
   const { sendSecrets } = props;
   const { popUp, handlePopUpToggle, handlePopUpOpen, handlePopUpClose } = usePopUp([
-    "deleteSendSecret"
+    "deleteSendSecret",
+    "editSendSecurity"
   ] as const);
 
   const { createNotification } = useNotificationContext();
@@ -37,7 +38,13 @@ export const SendSecretListView = (props: Props) => {
     <>
       <div className="flex flex-col" key={`${sendSecrets.length}`}>
         {sendSecrets.map((sendSecret) => {
-          return <SendSecretItem sendSecret={sendSecret} onDeleteSecret={onDeleteSecret} />;
+          return (
+            <SendSecretItem
+              sendSecret={sendSecret}
+              onDeleteSecret={onDeleteSecret}
+              handlePopUpOpen={handlePopUpOpen}
+            />
+          );
         })}
       </div>
       <DeleteActionModal
