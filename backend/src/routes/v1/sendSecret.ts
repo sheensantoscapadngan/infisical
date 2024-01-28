@@ -4,7 +4,8 @@ import {
   createSendSecret,
   deleteSendSecret,
   getSendSecret,
-  getSendSecrets
+  getSendSecrets,
+  updateSendSecretSecurity
 } from "../../controllers/v1/sendSecretController";
 import { viewSendSecretLimit } from "../../helpers";
 import { requireAuth } from "../../middleware";
@@ -17,6 +18,14 @@ router.post(
     acceptedAuthModes: [AuthMode.JWT]
   }),
   createSendSecret
+);
+
+router.patch(
+  "/:sendSecretId/security",
+  requireAuth({
+    acceptedAuthModes: [AuthMode.JWT]
+  }),
+  updateSendSecretSecurity
 );
 
 router.get(

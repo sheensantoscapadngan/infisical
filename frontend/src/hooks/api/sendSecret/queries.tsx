@@ -65,6 +65,7 @@ export const decryptSendSecrets = (
     return {
       key,
       value,
+      encryptionKey: sendEncryptionKey,
       id: encryptedSecret._id,
       url: `${siteURL}/send-secret/view/${encryptedSecret._id}/${sendEncryptionKey}`,
       expiresAt: new Date(encryptedSecret.expiresAt)

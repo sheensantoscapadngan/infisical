@@ -24,3 +24,12 @@ export const DeleteSendSecretV1 = z.object({
     password: z.string().optional()
   })
 });
+
+export const UpdateSendSecretSecurityV1 = z.object({
+  body: z.object({
+    password: z.string().min(1)
+  }),
+  params: z.object({
+    sendSecretId: z.string()
+  })
+});

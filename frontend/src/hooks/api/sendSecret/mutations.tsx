@@ -5,7 +5,12 @@ import {
   encryptSymmetric
 } from "@app/components/utilities/cryptography/crypto";
 import { MutationOptions, useMutation, useQueryClient } from "@tanstack/react-query";
-import { DecryptedSendSecret, TCreateSendSecretV1DTO, TDeleteSendSecretV1DTO } from "./types";
+import {
+  DecryptedSendSecret,
+  TCreateSendSecretV1DTO,
+  TDeleteSendSecretV1DTO,
+  TUpdateSendSecretSecurityV1DTO
+} from "./types";
 import { apiRequest } from "@app/config/request";
 import { decryptSendSecrets, secretKeys } from "./queries";
 
@@ -117,6 +122,28 @@ export const useDeleteSendSecretV1 = ({
   return useMutation<{}, {}, TDeleteSendSecretV1DTO>({
     mutationFn: async ({ id }) => {
       const { data } = await apiRequest.delete(`/api/v1/send-secrets/${id}`);
+
+      return data;
+    },
+    onSuccess: (_) => {
+      queryClient.invalidateQueries(secretKeys.getSendSecrets());
+    },
+    ...options
+  });
+};
+
+export const useUpdateSendSecretSecurityV1 = ({
+  options
+}: {
+  options?: Omit<MutationOptions<{}, {}, TUpdateSendSecretSecurityV1DTO>, "mutationFn">;
+} = {}) => {
+  const queryClient = useQueryClient();
+
+  return useMutation<{}, {}, TUpdateSendSecretSecurityV1DTO>({
+    mutationFn: async ({ id, password, encryptionKey }) => {
+      const { data } = await apiRequest.patch(`/api/v1/send-secrets/${id}/security`, {
+        password: createHash(password, encryptionKey)
+      });
 
       return data;
     },

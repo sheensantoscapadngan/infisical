@@ -62,7 +62,8 @@ const sendSecretSchema = new Schema<ISendSecret>(
       ref: "User"
     },
     password: {
-      type: String
+      type: String,
+      select: false
     }
   },
   {

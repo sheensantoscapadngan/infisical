@@ -61,7 +61,7 @@ export const getSendSecret = async (req: Request, res: Response) => {
 
   const sendSecret = await SendSecret.findOne({
     _id: sendSecretId
-  });
+  }).select("+password");
 
   if (sendSecret?.password && sendSecret.password !== password) {
     return res.status(401).send();
@@ -95,4 +95,36 @@ export const deleteSendSecret = async (req: Request, res: Response) => {
   });
 
   return res.status(200).send();
+};
+
+export const updateSendSecretSecurity = async (req: Request, res: Response) => {
+  const {
+    params: { sendSecretId },
+    body: { password }
+  } = await validateRequest(reqValidator.UpdateSendSecretSecurityV1, req);
+
+  const sendSecretToUpdate = await SendSecret.findOne({
+    _id: sendSecretId,
+    user: req.user._id
+  });
+
+  if (!sendSecretToUpdate) {
+    throw new Error("Failed to update secret");
+  }
+
+  const updatedSendSecret = await SendSecret.findOneAndUpdate(
+    {
+      _id: sendSecretToUpdate._id
+    },
+    {
+      password
+    },
+    {
+      new: true
+    }
+  );
+
+  return res.status(200).send({
+    sendSecret: updatedSendSecret
+  });
 };

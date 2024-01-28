@@ -12,6 +12,12 @@ export type TDeleteSendSecretV1DTO = {
   id: string;
 };
 
+export type TUpdateSendSecretSecurityV1DTO = {
+  id: string;
+  password: string;
+  encryptionKey: string;
+};
+
 export type EncryptedSendSecret = {
   encryptionKeyCiphertext: string;
   encryptionKeyIV: string;
@@ -30,8 +36,9 @@ export type EncryptedSendSecret = {
 };
 
 export type DecryptedSendSecret = {
-  id: string;
+  encryptionKey: string;
   expiresAt: Date;
+  id: string;
   key: string;
   url: string;
   value: string;

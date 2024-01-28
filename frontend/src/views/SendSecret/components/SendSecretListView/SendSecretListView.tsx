@@ -1,9 +1,13 @@
 import { useNotificationContext } from "@app/components/context/Notifications/NotificationProvider";
 import { DeleteActionModal } from "@app/components/v2";
 import { usePopUp } from "@app/hooks";
-import { useDeleteSendSecretV1 } from "@app/hooks/api/sendSecret/mutations";
+import {
+  useDeleteSendSecretV1,
+  useUpdateSendSecretSecurityV1
+} from "@app/hooks/api/sendSecret/mutations";
 import { DecryptedSendSecret } from "@app/hooks/api/sendSecret/types";
 import { useCallback } from "react";
+import { EditSendSecurityForm } from "../EditSendSecurityForm";
 import { SendSecretItem } from "./SendSecretItem";
 
 type Props = {
@@ -19,6 +23,7 @@ export const SendSecretListView = (props: Props) => {
 
   const { createNotification } = useNotificationContext();
   const { mutateAsync: deleteSendSecretV1 } = useDeleteSendSecretV1();
+  const { mutateAsync: updateSendSecretSecurityV1 } = useUpdateSendSecretSecurityV1();
 
   const handleSecretDelete = useCallback(async () => {
     await deleteSendSecretV1({ id: (popUp.deleteSendSecret?.data as DecryptedSendSecret).id });
@@ -28,6 +33,23 @@ export const SendSecretListView = (props: Props) => {
       text: "Successfully deleted secret"
     });
   }, [(popUp.deleteSendSecret?.data as DecryptedSendSecret)?.key]);
+
+  const handleSecretSecurityUpdate = useCallback(
+    async (password: string) => {
+      await updateSendSecretSecurityV1({
+        password,
+        id: (popUp.editSendSecurity?.data as DecryptedSendSecret).id,
+        encryptionKey: (popUp.editSendSecurity?.data as DecryptedSendSecret).encryptionKey
+      });
+
+      handlePopUpClose("editSendSecurity");
+      createNotification({
+        type: "success",
+        text: "Successfully modified secret configuration"
+      });
+    },
+    [(popUp.editSendSecurity?.data as DecryptedSendSecret)?.key]
+  );
 
   const onDeleteSecret = useCallback(
     (secret: DecryptedSendSecret) => handlePopUpOpen("deleteSendSecret", secret),
@@ -54,6 +76,12 @@ export const SendSecretListView = (props: Props) => {
         onChange={(isOpen) => handlePopUpToggle("deleteSendSecret", isOpen)}
         onDeleteApproved={handleSecretDelete}
         buttonText="Delete"
+      />
+      <EditSendSecurityForm
+        isOpen={popUp.editSendSecurity.isOpen}
+        onOpenChange={(state: boolean) => handlePopUpToggle("editSendSecurity", state)}
+        onClose={() => handlePopUpClose("editSendSecurity")}
+        onConfirm={handleSecretSecurityUpdate}
       />
     </>
   );
