@@ -15,6 +15,7 @@ import { useNotificationContext } from "@app/components/context/Notifications/No
 import { useCreateSendSecretV1 } from "@app/hooks/api/sendSecret/mutations";
 import { UserWsKeyPair } from "@app/hooks/api/types";
 import { DecryptedSendSecret } from "@app/hooks/api/sendSecret/types";
+import { useCallback } from "react";
 
 const expirations = [
   { label: "1 hour", value: "1h" },
@@ -66,7 +67,6 @@ export const CreateSendSecretForm = (props: Props) => {
 
   const handleFormSubmit = async ({ key, value, expiresIn, password }: TFormSchema) => {
     try {
-      // create send secret in FE
       const sendSecret = await createSendSecretV1({
         key: key.trim(),
         value,
@@ -75,7 +75,6 @@ export const CreateSendSecretForm = (props: Props) => {
         password
       });
 
-      // send secret to BE for saving
       setAddModalState(false);
       reset();
       createNotification({
@@ -83,11 +82,18 @@ export const CreateSendSecretForm = (props: Props) => {
         text: "Successfully created secret"
       });
       onSendSecretCreation(sendSecret);
-    } catch (error) {}
+    } catch (error) {
+      createNotification({
+        type: "error",
+        text: "Something went wrong"
+      });
+    }
   };
 
+  const handleOnOpenChange = useCallback((state: boolean) => setAddModalState(state), []);
+
   return (
-    <Modal isOpen={isAddModalOpen} onOpenChange={(state) => setAddModalState(state)}>
+    <Modal isOpen={isAddModalOpen} onOpenChange={handleOnOpenChange}>
       <ModalContent title="Add secret" subTitle="Create a secret for sharing">
         <form onSubmit={handleSubmit(handleFormSubmit)}>
           <FormControl label="Key" isError={Boolean(errors?.key)} errorText={errors?.key?.message}>
