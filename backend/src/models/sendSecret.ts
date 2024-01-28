@@ -71,6 +71,6 @@ const sendSecretSchema = new Schema<ISendSecret>(
   }
 );
 
-sendSecretSchema.index({ expiresAt: 1 }, { expireAfterSeconds: 20 });
+sendSecretSchema.index({ expiresAt: 1 }, { expireAfterSeconds: 0 });
 
 export const SendSecret = model<ISendSecret>("SendSecret", sendSecretSchema);
