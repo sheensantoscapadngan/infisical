@@ -106,7 +106,7 @@ export const SendSecretItem = (props: Props) => {
                     <FontAwesomeIcon icon={isSecretURLCopied ? faCheck : faCopy} />
                   </IconButton>
                 </Tooltip>
-                <Tooltip content="Manage auth method">
+                <Tooltip content="Manage security settings">
                   <IconButton
                     onClick={() => {
                       handlePopUpOpen("editSendSecurity", sendSecret);
