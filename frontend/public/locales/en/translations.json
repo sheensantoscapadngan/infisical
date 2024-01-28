@@ -305,6 +305,12 @@
       "auto-capitalization-description": "According to standards, Infisical will automatically capitalize your keys. If you want to disable this feature, you can do so here."
     }
   },
+  "send": {
+    "title": "Send Secrets",
+    "description": "A secure way to share text-based sensitive information with intended recipients",
+    "view-secret-title": "View Send Secret",
+    "view-secret-description": "This is protected by a password. Please type the password below to continue. This should be provided by the sender."
+  },
   "signup": {
     "title": "Sign Up",
     "og-title": "Replace .env files with 1 line of code. Sign Up for Infisical in 3 minutes.",

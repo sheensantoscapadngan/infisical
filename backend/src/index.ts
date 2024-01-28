@@ -50,6 +50,7 @@ import {
   secretImps as v1SecretImpsRouter,
   secret as v1SecretRouter,
   secretsFolder as v1SecretsFolder,
+  sendSecret as v1SendSecretRouter,
   serviceToken as v1ServiceTokenRouter,
   signup as v1SignupRouter,
   universalAuth as v1UniversalAuthRouter,
@@ -107,8 +108,8 @@ const main = async () => {
 
   const port = await getPort();
 
-  // initializing the database connection + redis 
-  await initRedis()
+  // initializing the database connection + redis
+  await initRedis();
   await DatabaseService.initDatabase(await getMongoURL());
   const serverCfg = await serverConfigInit();
   await setup();
@@ -238,6 +239,7 @@ const main = async () => {
   app.use("/api/v1/secret-approvals", v1SecretApprovalPolicyRouter);
   app.use("/api/v1/sso", v1SSORouter);
   app.use("/api/v1/secret-approval-requests", v1SecretApprovalRequestRouter);
+  app.use("/api/v1/send-secrets", v1SendSecretRouter);
 
   // v2 routes (improvements)
   app.use("/api/v2/signup", v2SignupRouter);
