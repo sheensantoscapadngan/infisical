@@ -14,10 +14,10 @@ import {
   Select,
   SelectItem
 } from "@app/components/v2";
+import { useWorkspace } from "@app/context";
 import { useCreateSendSecretV1 } from "@app/hooks/api/sendSecret/mutations";
 import { DecryptedSendSecret } from "@app/hooks/api/sendSecret/types";
 import { UserWsKeyPair } from "@app/hooks/api/types";
-import { useWorkspace } from "@app/context";
 
 const expirations = [
   { label: "1 hour", value: "1h" },

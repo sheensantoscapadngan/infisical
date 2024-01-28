@@ -2,6 +2,7 @@ import { useCallback } from "react";
 
 import { useNotificationContext } from "@app/components/context/Notifications/NotificationProvider";
 import { DeleteActionModal } from "@app/components/v2";
+import { useWorkspace } from "@app/context";
 import { usePopUp } from "@app/hooks";
 import {
   useDeleteSendSecretV1,
@@ -11,7 +12,6 @@ import { DecryptedSendSecret } from "@app/hooks/api/sendSecret/types";
 
 import { EditSendSecurityForm } from "../EditSendSecurityForm";
 import { SendSecretItem } from "./SendSecretItem";
-import { useWorkspace } from "@app/context";
 
 type Props = {
   sendSecrets: DecryptedSendSecret[];
