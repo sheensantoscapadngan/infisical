@@ -6,25 +6,16 @@ import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 export default function ViewSendSecret() {
   const { t } = useTranslation();
 
-  const { createNotification } = useNotificationContext();
-  const [password, setPassword] = useState("");
   const router = useRouter();
-
-  const onCopyValueToClipboard = () => {
-    navigator.clipboard.writeText(sendSecret?.value || "");
-    createNotification({
-      type: "info",
-      text: "Copied value"
-    });
-  };
-
+  const { createNotification } = useNotificationContext();
   const { id, encryptionKey } = router.query;
+  const [password, setPassword] = useState("");
 
   const {
     data: sendSecret,
@@ -36,6 +27,14 @@ export default function ViewSendSecret() {
     password
   });
 
+  const onCopyValueToClipboard = useCallback(() => {
+    navigator.clipboard.writeText(sendSecret?.value || "");
+    createNotification({
+      type: "info",
+      text: "Copied value"
+    });
+  }, [sendSecret]);
+
   const isAccessError = (error: unknown) => (error as AxiosError)?.response?.status === 401;
 
   const onUnlockSecret = () => {
@@ -45,7 +44,7 @@ export default function ViewSendSecret() {
   return (
     <div className="flex max-h-screen min-h-screen flex-col justify-center overflow-y-auto bg-gradient-to-tr from-mineshaft-600 via-mineshaft-800 to-bunker-700 px-6">
       <Head>
-        <title>{t("common.head-title", { title: "View Secret" })}</title>
+        <title>{t("common.head-title", { title: t("send.view-secret-title") })}</title>
         <link rel="icon" href="/infisical.ico" />
         <meta property="og:image" content="/images/message.png" />
         <meta property="og:title" content={t("login.og-title") ?? ""} />
@@ -62,10 +61,7 @@ export default function ViewSendSecret() {
             <h1 className="mb-5 bg-gradient-to-b from-white to-bunker-200 bg-clip-text text-center text-xl font-medium text-transparent">
               Infisical
             </h1>
-            <p className="justify mb-5 text-gray-400">
-              This is protected by a password. Please type the password below to continue. This
-              should be provided by the sender.
-            </p>
+            <p className="justify mb-5 text-gray-400">{t("send.view-secret-description")}</p>
             <Input
               value={password}
               onChange={(e) => setPassword(e.target.value)}
@@ -77,7 +73,7 @@ export default function ViewSendSecret() {
               className="select:-webkit-autofill:focus h-10"
             />
             <Button
-              key="view-secret-unlock-submit"
+              key="view-send-secret-unlock-submit"
               className="mr-4 mt-6 self-center pr-6 pl-6"
               type="submit"
               onClick={onUnlockSecret}
@@ -103,7 +99,7 @@ export default function ViewSendSecret() {
             />
           </div>
           <Button
-            key="view-secret-copy-clipboard"
+            key="view-send-secret-copy-clipboard"
             className="mr-4 mt-6 self-center pr-6 pl-6"
             type="submit"
             onClick={onCopyValueToClipboard}

@@ -307,7 +307,9 @@
   },
   "send": {
     "title": "Send Secrets",
-    "description": "A secure way to share text-based sensitive information with intended recipients"
+    "description": "A secure way to share text-based sensitive information with intended recipients",
+    "view-secret-title": "View Send Secret",
+    "view-secret-description": "This is protected by a password. Please type the password below to continue. This should be provided by the sender."
   },
   "signup": {
     "title": "Sign Up",
