@@ -1,9 +1,8 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { useTranslation } from "react-i18next";
-import { useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import Head from "next/head";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faMagnifyingGlass, faPlus, faArrowUp } from "@fortawesome/free-solid-svg-icons";
+import { faMagnifyingGlass, faPlus } from "@fortawesome/free-solid-svg-icons";
 import { Button, Input } from "@app/components/v2";
 import { CreateSendSecretForm } from "@app/views/SendSecret/components/CreateSendSecretForm";
 import { useGetSendSecretsV1 } from "@app/hooks/api/sendSecret";
@@ -27,9 +26,9 @@ export default function SendSecret() {
     decryptFileKey: decryptFileKey!
   });
 
-  const onSendSecretCreation = (sendSecret: DecryptedSendSecret) => {
+  const onSendSecretCreation = useCallback((sendSecret: DecryptedSendSecret) => {
     handlePopUpOpen("confirmSendURL", sendSecret);
-  };
+  }, []);
 
   const filteredSecrets = useMemo(() => {
     if (!sendSecrets) {

@@ -1,6 +1,7 @@
 import { Button, Modal, ModalContent, TextArea } from "@app/components/v2";
 import { DecryptedSendSecret } from "@app/hooks/api/sendSecret/types";
 import { UsePopUpState } from "@app/hooks/usePopUp";
+import { useCallback } from "react";
 
 type Props = {
   popUp: UsePopUpState<["confirmSendURL"]>;
@@ -10,11 +11,11 @@ type Props = {
 export const SendSecretURLModal = ({ popUp, handlePopUpToggle }: Props) => {
   const sendSecret = popUp.confirmSendURL.data as DecryptedSendSecret;
 
-  const onCopyToClipboard = () => {
+  const onCopyToClipboard = useCallback(() => {
     navigator.clipboard.writeText(sendSecret.url);
 
     handlePopUpToggle("confirmSendURL", false);
-  };
+  }, [sendSecret]);
 
   return (
     <Modal
