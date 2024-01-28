@@ -19,6 +19,12 @@ export const CreateSendSecretV1 = z.object({
 export const DeleteSendSecretV1 = z.object({
   params: z.object({
     sendSecretId: z.string()
+  })
+});
+
+export const ViewSendSecretV1 = z.object({
+  params: z.object({
+    sendSecretId: z.string()
   }),
   query: z.object({
     password: z.string().optional()

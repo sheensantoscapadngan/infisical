@@ -3,9 +3,9 @@ import express from "express";
 import {
   createSendSecret,
   deleteSendSecret,
-  getSendSecret,
   getSendSecrets,
-  updateSendSecretSecurity
+  updateSendSecretSecurity,
+  viewSendSecret
 } from "../../controllers/v1/sendSecretController";
 import { viewSendSecretLimit } from "../../helpers";
 import { requireAuth } from "../../middleware";
@@ -37,7 +37,7 @@ router.get(
 );
 
 // for public viewing of send secret
-router.get("/:sendSecretId", viewSendSecretLimit, getSendSecret);
+router.get("/:sendSecretId", viewSendSecretLimit, viewSendSecret);
 
 router.delete(
   "/:sendSecretId",

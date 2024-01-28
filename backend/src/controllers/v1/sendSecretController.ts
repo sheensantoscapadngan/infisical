@@ -53,11 +53,11 @@ export const getSendSecrets = async (req: Request, res: Response) => {
   });
 };
 
-export const getSendSecret = async (req: Request, res: Response) => {
+export const viewSendSecret = async (req: Request, res: Response) => {
   const {
     params: { sendSecretId },
     query: { password }
-  } = await validateRequest(reqValidator.DeleteSendSecretV1, req);
+  } = await validateRequest(reqValidator.ViewSendSecretV1, req);
 
   const sendSecret = await SendSecret.findOne({
     _id: sendSecretId
